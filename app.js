@@ -3,6 +3,10 @@ const app = express();
 const port = 5000;
 const db = require('./database/mysql');
 const User = require('./models/user');
+const userRoute = require('./routes/user');
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true})); //parse về json để nhận req bên client
 
 db
   .authenticate()
@@ -33,5 +37,8 @@ app.get('/api/members',(req,res,next) => {
     res.send(users);
   }); 
 })
+
+
+app.use('/user',userRoute);
 
 app.listen(port,() => console.log(`Listening on port ${port}`));
