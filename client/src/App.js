@@ -24,7 +24,7 @@ class App extends React.Component {
   render(){
     //var { members } = this.state //Kiểu ES6,hoặc var members = this.sate.members
     var elmMembers = this.state.members.map((member,index) => {
-      return <Members key = {member.id} name={member.lastName}/> // lấy từng phần tử trong state gửi qua component Members,dùng map phải có từ khóa key
+      return <Members key = {member.id} fullName={member.fullName}/> // lấy từng phần tử trong state gửi qua component Members,dùng map phải có từ khóa key
     })
     return (
       <div className="App">

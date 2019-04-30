@@ -29,12 +29,9 @@ app.get('/',(req,res,next) => {
 
 
 app.get('/api/members',(req,res,next) => {
-    const members = [
-        {id: 1, lastName: 'Minh', MSSV: '1660349'},
-        {id: 2, lastName: 'Mạnh', MSSV: '...'},
-        {id: 3, lastName: 'Luân', MSSV: '...'}
-    ];
-    res.json(members);
+  User.findAll().then(users => {
+    res.send(users);
+  }); 
 })
 
 app.listen(port,() => console.log(`Listening on port ${port}`));
