@@ -10,6 +10,7 @@ class Singup extends React.Component {
     };
   }
 
+  //Click submit tạo json để gửi trả về server
   onSubmitUser = () => {
     let {email,password,fullName} = this.state;
     let postData = {
@@ -18,6 +19,7 @@ class Singup extends React.Component {
         fullName
       };
 
+  //gửi dữ liệu json trả về server
     Axios({
       method: "post",
       url: "http://localhost:5000/user/signup",
@@ -26,6 +28,7 @@ class Singup extends React.Component {
     }).then(result => console.log(result));
   };
 
+  //Thay đổi dữ liệu state khi người dùng nhập vào
   onChangeInput = e => {
     let targetValue = e.target.value;
     let targetName = e.target.name;
@@ -37,16 +40,16 @@ class Singup extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-6">
               <h1>Đăng Ký</h1>
-              <div class="form-group">
+              <div className="form-group">
                 <label>Email:</label>
                 <input
                   value={this.state.email}
                   type="email"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Nhập email"
                   name="email"
                   onChange={this.onChangeInput}
@@ -55,7 +58,7 @@ class Singup extends React.Component {
                 <input
                   value={this.state.password}
                   type="password"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Nhập mật khẩu"
                   name="password"
                   onChange={this.onChangeInput}
@@ -64,7 +67,7 @@ class Singup extends React.Component {
                 <input
                   value={this.state.fullName}
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Nhập tên đầy đủ"
                   name="fullName"
                   onChange={this.onChangeInput}

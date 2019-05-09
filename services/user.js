@@ -1,8 +1,9 @@
 const User = require("./../models/user");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
 
-//Option 1
+//Option 1 đăng ký
 const signup = async ({ email, fullName, password }) => {
   try {
     const isUserExist = await User.findOne({
@@ -26,6 +27,29 @@ const signup = async ({ email, fullName, password }) => {
       }
     }
   } catch (err) {
+    console.log(err);
+    return { status: false, data: "fail when signup" };
+  }
+};
+
+const login = async ({email, password }) => {
+  try {
+    const isUserExist = await User.findOne({
+      where: {
+        email : email,
+      }
+    });
+  if(isUserExist){
+    //du lieu dung' hết
+    var data = {
+      id: isUserExist.id,
+      email: isUserExist.email
+    };
+    var token = jwt.sign({ data}, 'minh', { expiresIn: '1h' });
+    return { status: true,token };
+  }else{
+    return { status: false, data: "email not existing." };
+  }}catch (err) {
     console.log(err);
     return { status: false, data: "fail when signup" };
   }
@@ -65,7 +89,7 @@ const signup = async ({ email, fullName, password }) => {
 // };
 
 const service = {
-  signup
+  signup,login
 };
 
 module.exports = service;
