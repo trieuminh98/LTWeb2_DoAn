@@ -6,7 +6,7 @@ const passport = require('passport');
 router.post("/signup", (req, res, next) => {
   service.signup(req.body)
     .then(result => {
-        console.log("result",result)
+        console.log("result",result);
         res.json(result);
     })
 });

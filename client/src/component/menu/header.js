@@ -5,9 +5,9 @@ class Header extends React.Component {
     return (
       <React.Fragment>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <a>
+          <span>
             MMLBike
-          </a>
+          </span>
           <button
             className="navbar-toggler"
             type="button"

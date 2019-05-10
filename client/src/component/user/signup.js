@@ -1,31 +1,34 @@
 import React from "react";
-import Axios from "axios";
+import { Redirect } from "react-router";
+import services from "./../../services/userService";
+
 class Singup extends React.Component {
   constructor() {
     super();
     this.state = {
       email: "",
       password: "",
-      fullName: ""
+      fullName: "",
+      status: false,
+      redirect: false
     };
   }
 
   //Click submit tạo json để gửi trả về server
   onSubmitUser = () => {
-    let {email,password,fullName} = this.state;
+    let { email, password, fullName } = this.state;
     let postData = {
-        email,
-        password,
-        fullName
-      };
-
-  //gửi dữ liệu json trả về server
-    Axios({
-      method: "post",
-      url: "http://localhost:5000/user/signup",
-      data: postData,
-      responseType: "json"
-    }).then(result => console.log(result));
+      email,
+      password,
+      fullName
+    };
+    //gửi dữ liệu json trả về server
+    services.signup(postData).then(result => {
+      console.log(result);
+        this.setState({
+          redirect: true,
+        });
+    });
   };
 
   //Thay đổi dữ liệu state khi người dùng nhập vào
@@ -37,7 +40,14 @@ class Singup extends React.Component {
     });
   };
 
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      return <Redirect to='/login' />
+    }
+  }
+
   render() {
+
     return (
       <React.Fragment>
         <div className="container">
@@ -72,6 +82,8 @@ class Singup extends React.Component {
                   name="fullName"
                   onChange={this.onChangeInput}
                 />
+                <br />
+                {this.renderRedirect()}
                 <button className="btn btn-success" onClick={this.onSubmitUser}>
                   Submit
                 </button>

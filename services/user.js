@@ -21,7 +21,7 @@ const signup = async ({ email, fullName, password }) => {
           password: hash,
           fullName: fullName
         });
-        return { status: true, data: "Success" };
+        return { status: true, data: "Success signup" };
       } else {
         return { status: false, data: "hash password fail" };
       }
@@ -40,18 +40,25 @@ const login = async ({email, password }) => {
       }
     });
   if(isUserExist){
-    //du lieu dung' hết
-    var data = {
-      id: isUserExist.id,
-      email: isUserExist.email
-    };
-    var token = jwt.sign({ data}, 'minh', { expiresIn: '1h' });
-    return { status: true,token };
+    //Kiem tra password
+    const isPasswordCorret = await bcrypt.compare(password,isUserExist.password);
+    //Du lieu dung het thi gui status success va token ve client
+    console.log(isPasswordCorret);
+    if(isPasswordCorret){
+      var data = {
+        id: isUserExist.id,
+        email: isUserExist.email
+      };
+      var token = jwt.sign({ data}, 'minh', { expiresIn: '1h' });
+      return { status: true , token, data: "success login" };
+    }else{
+      return { status: false, data: "password incorrect." };
+    }
   }else{
     return { status: false, data: "email not existing." };
   }}catch (err) {
     console.log(err);
-    return { status: false, data: "fail when signup" };
+    return { status: false, data: "fail when login" };
   }
 };
 

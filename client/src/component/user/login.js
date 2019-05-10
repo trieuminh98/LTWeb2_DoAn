@@ -1,34 +1,47 @@
 import React from "react";
-import Axios from "axios";
 import service from "../../services/userService";
+import { Redirect } from "react-router-dom";
 class Singup extends React.Component {
   constructor() {
     super();
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      status: "",
+      redirect:false
     };
   }
 
   //Click submit tạo json để gửi trả về server
   onSubmitUser = () => {
-    console.log('hello');
     let { email, password } = this.state;
     let postData = {
       email,
       password
     };
-
     //gửi dữ liệu json trả về server
-    service.login(postData).then(result =>{
-      const token = result.data.token;
-      if(token){
-        localStorage.setItem("token",token);
-      }
-    })
-    .catch(err => {
-      console.log("err",err);
-    })
+    service
+      .login(postData)
+      .then(result => {
+        console.log(result);
+        if(result.status){
+          this.setState({
+            redirect:true
+          })
+        }
+        else{
+          this.setState({
+            status: result.data.data
+          });
+        }
+        const token = result.data.token;
+        if (token) {
+          localStorage.setItem("token", token);
+        }
+      })
+      .catch(err => {
+        console.log("err", err);
+      });
     //Thay đổi dữ liệu state khi người dùng nhập vào
   };
 
@@ -40,20 +53,29 @@ class Singup extends React.Component {
     });
   };
 
-  onSeeProfile = (e) => {
-    service.getProfile()
-      .then(result => {
-        console.log("resu;t -> ",result);
-      })
+  onSeeProfile = e => {
+    service.getProfile().then(result => {
+      console.log("result -> ", result);
+    });
+  };
+
+  renderRedirect = () =>{
+    if(this.state.redirect){
+      return <Redirect to='/index' />;
+    }
   }
 
   render() {
+    var errorisActive;
+    if (this.state.status) {
+      errorisActive = <span className="text-danger">{this.state.status}</span>;
+    }
     return (
       <React.Fragment>
         <div className="container">
           <div className="row">
             <div className="col-md-6">
-              <h1>Đăng Ký</h1>
+              <h1>Đăng Nhập</h1>
               <div className="form-group">
                 <label>Email:</label>
                 <input
@@ -73,16 +95,16 @@ class Singup extends React.Component {
                   name="password"
                   onChange={this.onChangeInput}
                 />
-                <br/>
+                <br />
+                {this.renderRedirect()}
                 <button className="btn btn-success" onClick={this.onSubmitUser}>
-                  Submit
+                  Đăng nhập
                 </button>
-
                 <button className="btn btn-primary" onClick={this.onSeeProfile}>
                   Xem profile
                 </button>
-
-                button
+                <br />
+                {errorisActive}
               </div>
             </div>
           </div>
