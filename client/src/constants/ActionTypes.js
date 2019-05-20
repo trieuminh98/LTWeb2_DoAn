@@ -1,1 +1,1 @@
-export const LIST_ALL = 'LIST_ALL';
+export const CHECK_CURRENT_USER = 'CHECK_CURRENT_USER';

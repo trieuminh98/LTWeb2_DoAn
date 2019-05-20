@@ -1,17 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+
 class Header extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       isLogged: false,
       fullName: "",
-
     }
   }
 
   render() {
-    const {currentUser} = this.props;
+    const currentUser = this.props.checkCurrentUser
+    console.log(currentUser);
     return (
       <React.Fragment>
         <div className="row bg-light">
@@ -39,7 +41,7 @@ class Header extends React.Component {
                 <ul className="navbar-nav">
                   <li className="nav-item">
                     <Link className="nav-link" to="/login">
-                      <span>{currentUser ? currentUser.email : '' }</span>
+                      <span>{currentUser ? currentUser : '' }</span>
                     </Link>
                   </li>
                 </ul>
@@ -51,4 +53,10 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+const mapStateToProps = (state) => {
+  return {
+    checkCurrentUser : state.checkCurrentUser
+  }
+}
+
+export default connect(mapStateToProps, null)(Header);

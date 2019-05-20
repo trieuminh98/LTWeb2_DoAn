@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import tasks from './task';
+import checkCurrentUser from './users';
 
 const myReducer = combineReducers({
-    tasks
+    checkCurrentUser
 });
 
 export default myReducer;

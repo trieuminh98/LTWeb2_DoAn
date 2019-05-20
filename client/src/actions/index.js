@@ -1,7 +1,7 @@
 import * as types from './../constants/ActionTypes';
 
-export const listAll = () => {
+export const checkCurrentUSser = () => {
     return {
-        type: types.LIST_ALL
+        type: types.CHECK_CURRENT_USER
     }
 }
