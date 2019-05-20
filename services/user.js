@@ -50,7 +50,7 @@ const login = async ({email, password }) => {
         email: isUserExist.email
       };
       var token = jwt.sign({ data}, 'minh', { expiresIn: '1h' });
-      return { status: true , token, data: "success login" };
+      return { status: true , token , data: isUserExist.fullName };
     }else{
       return { status: false, data: "password incorrect." };
     }

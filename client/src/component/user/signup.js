@@ -10,7 +10,6 @@ class Singup extends React.Component {
       password: "",
       fullName: "",
       status: false,
-      redirect: false
     };
   }
 
@@ -25,11 +24,22 @@ class Singup extends React.Component {
     //gửi dữ liệu json trả về server
     services.signup(postData).then(result => {
       console.log(result);
-        this.setState({
-          redirect: true,
-        });
+      let status = result.data.status;
+      if(status){
+        services.login({email,password})
+        .then(loginResult => {
+          this.props.UpdateLoginUser(email);
+          this.props.history.push('/index');
+        }).catch(err => {
+          console.log({err})
+        })
+      }else{
+        // this.setState()
+        console.log("failure")
+      }
+      
     });
-  };
+  }
 
   //Thay đổi dữ liệu state khi người dùng nhập vào
   onChangeInput = e => {
@@ -42,12 +52,12 @@ class Singup extends React.Component {
 
   renderRedirect = () => {
     if (this.state.redirect) {
-      return <Redirect to='/login' />
+      return <Redirect to="/app" />;
     }
-  }
+  };
 
   render() {
-
+    console.log("render ");
     return (
       <React.Fragment>
         <div className="container">
@@ -83,7 +93,6 @@ class Singup extends React.Component {
                   onChange={this.onChangeInput}
                 />
                 <br />
-                {this.renderRedirect()}
                 <button className="btn btn-success" onClick={this.onSubmitUser}>
                   Submit
                 </button>

@@ -8,7 +8,7 @@ class Singup extends React.Component {
       email: "",
       password: "",
       status: "",
-      redirect:false
+      isLogged: false
     };
   }
 
@@ -24,19 +24,22 @@ class Singup extends React.Component {
       .login(postData)
       .then(result => {
         console.log(result);
-        if(result.status){
+        if (result.status) {
           this.setState({
-            redirect:true
-          })
-        }
-        else{
+            isLogged: true
+          });
+          const token = result.data.token;
+          if (token) {
+            localStorage.setItem("token", token);
+            localStorage.setItem("fullName", result.data.data);
+            localStorage.setItem("email", email);
+          }
+
+          this.props.UpdateLoginUser(email);
+        } else {
           this.setState({
             status: result.data.data
           });
-        }
-        const token = result.data.token;
-        if (token) {
-          localStorage.setItem("token", token);
         }
       })
       .catch(err => {
@@ -59,11 +62,11 @@ class Singup extends React.Component {
     });
   };
 
-  renderRedirect = () =>{
-    if(this.state.redirect){
-      return <Redirect to='/index' />;
+  renderRedirect = () => {
+    if (this.state.isLogged) {
+      return <Redirect to='/app' />;
     }
-  }
+  };
 
   render() {
     var errorisActive;
