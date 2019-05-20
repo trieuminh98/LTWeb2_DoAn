@@ -28,7 +28,6 @@ class Singup extends React.Component {
       if(status){
         services.login({email,password})
         .then(loginResult => {
-          this.props.UpdateLoginUser(email);
           this.props.history.push('/index');
         }).catch(err => {
           console.log({err})

@@ -8,7 +8,6 @@ class Singup extends React.Component {
       email: "",
       password: "",
       status: "",
-      isLogged: false
     };
   }
 
@@ -25,17 +24,13 @@ class Singup extends React.Component {
       .then(result => {
         console.log(result);
         if (result.status) {
-          this.setState({
-            isLogged: true
-          });
+          this.props.history.push('/index');
           const token = result.data.token;
           if (token) {
             localStorage.setItem("token", token);
             localStorage.setItem("fullName", result.data.data);
             localStorage.setItem("email", email);
           }
-
-          this.props.UpdateLoginUser(email);
         } else {
           this.setState({
             status: result.data.data
@@ -60,12 +55,6 @@ class Singup extends React.Component {
     service.getProfile().then(result => {
       console.log("result -> ", result);
     });
-  };
-
-  renderRedirect = () => {
-    if (this.state.isLogged) {
-      return <Redirect to='/app' />;
-    }
   };
 
   render() {
@@ -99,7 +88,6 @@ class Singup extends React.Component {
                   onChange={this.onChangeInput}
                 />
                 <br />
-                {this.renderRedirect()}
                 <button className="btn btn-success" onClick={this.onSubmitUser}>
                   Đăng nhập
                 </button>
