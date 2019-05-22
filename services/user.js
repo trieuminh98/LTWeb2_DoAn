@@ -1,14 +1,14 @@
 const bcrypt = require("bcrypt");
-const User = require('./../models/user')
+const User = require("./../models/user");
 const saltRounds = 10;
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 //Hàm đăng ký
 const signup = async ({ email, fullName, password }) => {
   try {
     const isUserExist = await User.findOne({
-      'email': email,
-      'fullName': fullName
+      email: email,
+      fullName: fullName
     });
     if (isUserExist) {
       return { status: false, data: "email existing." };
@@ -17,16 +17,20 @@ const signup = async ({ email, fullName, password }) => {
       if (hash) {
         const userResult = new User({
           //Opt 1
-          'email': email,
-          'password': hash,
+          email: email,
+          password: hash,
           //Opt 2
           fullName,
           //Opt 3
-          username: email
+          userName: email
         });
-        return { status: true, data: "Success signup" };
-      } else {
-        return { status: false, data: "hash password fail" };
+        //save data
+        const saveUserResult = await userResult.save();
+        if (saveUserResult) {
+          return { status: true, data: "Success signup" };
+        } else {
+          return { status: false, data: "hash password fail" };
+        }
       }
     }
   } catch (err) {
@@ -35,8 +39,8 @@ const signup = async ({ email, fullName, password }) => {
   }
 };
 
-const login = async ({email, password }) => {
-  return { status: true , token:'xxxxxxxx' , data: 'isUserExist.fullName' };
+const login = async ({ email, password }) => {
+  return { status: true, token: "xxxxxxxx", data: "isUserExist.fullName" };
 };
 
 //Option 2
@@ -73,7 +77,8 @@ const login = async ({email, password }) => {
 // };
 
 const service = {
-  signup,login
+  signup,
+  login
 };
 
 module.exports = service;
