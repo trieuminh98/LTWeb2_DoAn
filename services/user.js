@@ -40,7 +40,31 @@ const signup = async ({ email, fullName, password }) => {
 };
 
 const login = async ({ email, password }) => {
-  return { status: true, token: "xxxxxxxx", data: "isUserExist.fullName" };
+  try {
+    const isUserExist = await User.findOne({
+        'email' : email,
+    });
+  if(isUserExist){
+    //Kiem tra password
+    const isPasswordCorret = await bcrypt.compare(password,isUserExist.password);
+    //Du lieu dung het thi gui status success va token ve client
+    if(isPasswordCorret){
+      var data = {
+        //vi id cua mongodb là _id
+        id: isUserExist._id,
+        email: isUserExist.email
+      };
+      var token = jwt.sign({ data}, 'minh', { expiresIn: '1h' });
+      return { status: true , token , data: isUserExist.fullName };
+    }else{
+      return { status: false, data: "password incorrect." };
+    }
+  }else{
+    return { status: false, data: "email not existing." };
+  }}catch (err) {
+    console.log(err);
+    return { status: false, data: "fail when login" };
+  }
 };
 
 //Option 2
