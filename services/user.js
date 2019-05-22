@@ -1,10 +1,38 @@
 const bcrypt = require("bcrypt");
+const User = require('./../models/user')
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 
-//Option 1 đăng ký
+//Hàm đăng ký
 const signup = async ({ email, fullName, password }) => {
-  return { status: true, data: "Success signup" };
+  try {
+    const isUserExist = await User.findOne({
+      'email': email,
+      'fullName': fullName
+    });
+    if (isUserExist) {
+      return { status: false, data: "email existing." };
+    } else {
+      const hash = await bcrypt.hash(password, saltRounds);
+      if (hash) {
+        const userResult = new User({
+          //Opt 1
+          'email': email,
+          'password': hash,
+          //Opt 2
+          fullName,
+          //Opt 3
+          username: email
+        });
+        return { status: true, data: "Success signup" };
+      } else {
+        return { status: false, data: "hash password fail" };
+      }
+    }
+  } catch (err) {
+    console.log(err);
+    return { status: false, data: "fail when signup" };
+  }
 };
 
 const login = async ({email, password }) => {
