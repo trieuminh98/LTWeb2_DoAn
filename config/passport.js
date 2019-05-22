@@ -2,6 +2,7 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const opts = {}
 const User = require('./../models/user');
+const ObjectId = require('mongoose').ObjectId;
 //Decode token from clirny
 //giãi mã chuỗi token từ client
 // opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('JWT')
@@ -15,19 +16,16 @@ const jwtOptions = {
 }
 
 const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
-    console.log(payload);
     const {id,email} = payload.data;
     User.findOne({
-        where : {
-            id: id,
-            email: email
-        }
+        'email' : email,
+        '_id': ObjectId(id) //Mongodb có id đặc biệt là ObjectId
     }).then(user => {
         if(user){
-            console.log("thanh cong");
+            console.log("thanh cong passport");
             return done(null,user);
         }else{
-            console.log("that bai");
+            console.log("that bai passport");
             return done(null,false);
         }
     }).catch(err => {
