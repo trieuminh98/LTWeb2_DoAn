@@ -1,24 +1,24 @@
-import React from 'react';
-import './App.css';
-
-import Signup from './component/user/signup';
-import Login from './component/user/login';
-import {Switch,Route} from 'react-router-dom';
+import React from "react";
+import "./App.css";
+import { Provider } from "react-redux";
+import store from "./store";
+import Signup from "./component/user/signup";
+import Login from "./component/user/login";
+import { Switch, Route } from "react-router-dom";
 // import {Bros} from 'react-router'
-import Header from './component/menu/header'
+import Header from "./component/menu/header";
 class App extends React.Component {
-  render(){
+  render() {
     return (
-      <React.Fragment>
-        <Header/>
+      <Provider store={store}>
+        <Header />
         <Switch>
-          <Route path='/login' component={ Login }></Route>
-          <Route path='/signup' component={ Signup }></Route>
+          <Route path="/login" component={Login} />
+          <Route path="/signup" component={Signup} />
         </Switch>
-      </React.Fragment>
+      </Provider>
     );
   }
 }
-
 
 export default App;
