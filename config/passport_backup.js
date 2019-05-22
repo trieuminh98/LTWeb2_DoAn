@@ -15,34 +15,11 @@ const jwtOptions = {
 }
 
 const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
-    console.log(payload);
-    const {id,email} = payload.data;
-    User.findOne({
-        where : {
-            id: id,
-            email: email
-        }
-    }).then(user => {
-        if(user){
-            console.log("thanh cong");
-            return done(null,user);
-        }else{
-            console.log("that bai");
-            return done(null,false);
-        }
-    }).catch(err => {
-        console.log("di vao catch err",err);
-        done(err,false);
-    })
-    // User.findById(payload._id, function(err, _user) {
-    //   if (err) return done(err, false);
-  
-    //   if (_user) {
-    //     done(null, _user);
-    //   } else {
-    //     done(null, false);
-    //   }
-    // });
+    let user = {
+        username: 'minh',
+        id: 69
+    }
+    return done(null,user);
 });
 
 
