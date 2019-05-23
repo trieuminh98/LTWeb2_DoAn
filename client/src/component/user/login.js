@@ -1,14 +1,14 @@
 import React from "react";
 import service from "../../services/userService";
 import { connect } from "react-redux";
+import usersAction from "./../../actions/usersAction";
 
-class Singup extends React.Component {
+class Login extends React.Component {
   constructor() {
     super();
     this.state = {
       email: "",
       password: "",
-      status: ""
     };
   }
 
@@ -19,37 +19,31 @@ class Singup extends React.Component {
       email,
       password
     };
-    //gửi dữ liệu json trả về server
-    service
-      .login(postData)
-      .then(result => {
-        console.log(result);
-        if (result.status) {
-          this.props.history.push("/index");
-          const token = result.data.token;
-          if (token) {
-            localStorage.setItem("token", token);
-            localStorage.setItem("fullName", result.data.data);
-            localStorage.setItem("email", email);
-          }
-        } else {
-          this.setState({
-            status: result.data.data
-          });
-        }
-      })
-      .catch(err => {
-        console.log("err", err);
-      });
-    //Thay đổi dữ liệu state khi người dùng nhập vào
+    this.props.loginRequest(postData);
   };
 
+  //Thay đổi dữ liệu state khi người dùng nhậ
   onChangeInput = e => {
     let targetValue = e.target.value;
     let targetName = e.target.name;
     this.setState({
       [targetName]: targetValue
     });
+  };
+
+  componentDidMount(){
+    this.props.clearSignAlert();
+  }
+
+  //Kiểm tra alert trong userReducer để lấy trạng thái
+  onRenderAlert = () => {
+    const { alert } = this.props.usersReducer;
+    if (alert) {
+      let className = alert.status ? "text-success" : "text-danger";
+      return <p className={className}> {alert.data} </p>;
+    } else {
+      return null;
+    }
   };
 
   onSeeProfile = e => {
@@ -59,10 +53,6 @@ class Singup extends React.Component {
   };
 
   render() {
-    var errorisActive;
-    if (this.state.status) {
-      errorisActive = <span className="text-danger">{this.state.status}</span>;
-    }
     return (
       <React.Fragment>
         <div className="container">
@@ -89,6 +79,8 @@ class Singup extends React.Component {
                   onChange={this.onChangeInput}
                 />
                 <br />
+                {this.onRenderAlert()}
+                <br />
                 <button className="btn btn-success" onClick={this.onSubmitUser}>
                   Đăng nhập
                 </button>
@@ -96,7 +88,6 @@ class Singup extends React.Component {
                   Xem profile
                 </button>
                 <br />
-                {errorisActive}
               </div>
             </div>
           </div>
@@ -106,4 +97,20 @@ class Singup extends React.Component {
   }
 }
 
-export default Singup;
+const mapStateToProps = state => {
+  return {
+    usersReducer: state.usersReducer
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    loginRequest: param => dispatch(usersAction.loginRequest(param)),
+    clearSignAlert : () => dispatch(usersAction.clearSignAlert())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);

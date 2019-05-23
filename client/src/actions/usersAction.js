@@ -46,11 +46,62 @@ const signupFailure = err => {
   };
 };
 
+//Action gửi yêu cầu đăng ký tới server
+const loginRequest = ({email, password }) => {
+  return dispatch => {
+    userService.login({email,password})
+      .then(result => {
+        let { data, status, token} = result.data;
+        if(status){
+          let user = {
+            fullName: data,
+            email
+          }
+          localStorage.setItem('token',token);
+          localStorage.setItem('user',JSON.stringify(user))
+          dispatch(loginSuccess(user));
+        }else{
+          dispatch(loginFailure(data));
+        }
+      })
+      .catch(err => {
+        dispatch(loginFailure(err.toString()));
+      })
+  }
+};
+
+//Action khi yêu cầu đăng ký thành công => gửi trả dữ liệu
+const loginSuccess = data => {
+  return {
+    type: types.LOGIN_SUCCESS,
+    data
+  };
+};
+
+//Action khi yêu cầu đăng ký thất bại => gửi lỗi về
+const loginFailure = err => {
+  return {
+    type: types.LOGIN_FAILURE,
+    err
+  };
+};
+
+const clearSignAlert = () => {
+  return {
+    type: types.CLEAR_SIGN_ALERT
+  };
+};
+
+
 const userAction = {
   checkCurrentUSer,
   signupRequest,
   signupSuccess,
-  signupFailure
+  signupFailure,
+  loginRequest,
+  loginSuccess,
+  loginFailure,
+  clearSignAlert
 };
 
 export default userAction;

@@ -5,15 +5,10 @@ import { connect } from "react-redux";
 class Header extends React.Component {
   constructor(props){
     super(props);
-    this.state = {
-      isLogged: false,
-      fullName: "",
-    }
   }
 
   render() {
-    const currentUser = this.props.checkCurrentUser
-    console.log(currentUser);
+    const {currentUser} = this.props.userReducers;
     return (
       <React.Fragment>
         <div className="row bg-light">
@@ -41,7 +36,7 @@ class Header extends React.Component {
                 <ul className="navbar-nav">
                   <li className="nav-item">
                     <Link className="nav-link" to="/login">
-                      <span>{currentUser ? currentUser : '' }</span>
+                      <span>{currentUser ? currentUser.fullName : '' }</span>
                     </Link>
                   </li>
                 </ul>
@@ -53,9 +48,9 @@ class Header extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    checkCurrentUser : state.checkCurrentUser
+    userReducers : state.usersReducer
   }
 }
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router";
 import { connect } from "react-redux";
-import userAction from "./../../actions/usersAction";
+import usersAction from "./../../actions/usersAction";
 class Signup extends React.Component {
   constructor() {
     super();
@@ -13,7 +13,6 @@ class Signup extends React.Component {
   }
 
   //Click submit gọi tới usersAction signupRequest
-  //Luồng xử lý chính redux gọi vào usersAction xử lý => Dispatcher tới users.js/reducers để lưu state => lưu vào rootReducer trong index.js/reducers
   onSubmitUser = () => {
     let { email, password, fullName } = this.state;
     let postData = {
@@ -108,7 +107,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    signupRequest: param => dispatch(userAction.signupRequest(param))
+    signupRequest: param => dispatch(usersAction.signupRequest(param)),
+    clearSignAlert : () => dispatch(usersAction.clearSignAlert())
   };
 };
 

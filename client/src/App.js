@@ -10,6 +10,7 @@ import Header from "./component/menu/header";
 class App extends React.Component {
   render() {
     return (
+      //Luồng xử lý chính redux gọi vào usersAction xử lý => Dispatcher tới users.js/reducers để lưu state => lưu vào rootReducer trong index.js/reducers
       <Provider store={store}>
         <Header />
         <Switch>
