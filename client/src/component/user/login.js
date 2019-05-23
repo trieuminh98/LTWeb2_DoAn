@@ -1,13 +1,14 @@
 import React from "react";
 import service from "../../services/userService";
-import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+
 class Singup extends React.Component {
   constructor() {
     super();
     this.state = {
       email: "",
       password: "",
-      status: "",
+      status: ""
     };
   }
 
@@ -24,7 +25,7 @@ class Singup extends React.Component {
       .then(result => {
         console.log(result);
         if (result.status) {
-          this.props.history.push('/index');
+          this.props.history.push("/index");
           const token = result.data.token;
           if (token) {
             localStorage.setItem("token", token);

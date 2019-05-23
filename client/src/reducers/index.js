@@ -1,8 +1,9 @@
-import { combineReducers } from 'redux';
-import checkCurrentUser from './users';
+import { combineReducers } from "redux";
+import usersReducer from "./users";
 
-const myReducer = combineReducers({
-    checkCurrentUser
+//Reducer chính chứa tất cả các reducer khác
+const rootReducer = combineReducers({
+  usersReducer
 });
 
-export default myReducer;
+export default rootReducer;

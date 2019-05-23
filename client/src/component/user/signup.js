@@ -1,19 +1,19 @@
 import React from "react";
 import { Redirect } from "react-router";
-import services from "./../../services/userService";
-
-class Singup extends React.Component {
+import { connect } from "react-redux";
+import userAction from "./../../actions/usersAction";
+class Signup extends React.Component {
   constructor() {
     super();
     this.state = {
       email: "",
       password: "",
-      fullName: "",
-      status: false,
+      fullName: ""
     };
   }
 
-  //Click submit tạo json để gửi trả về server
+  //Click submit gọi tới usersAction signupRequest
+  //Luồng xử lý chính redux gọi vào usersAction xử lý => Dispatcher tới users.js/reducers để lưu state => lưu vào rootReducer trong index.js/reducers
   onSubmitUser = () => {
     let { email, password, fullName } = this.state;
     let postData = {
@@ -21,24 +21,8 @@ class Singup extends React.Component {
       password,
       fullName
     };
-    //gửi dữ liệu json trả về server
-    services.signup(postData).then(result => {
-      console.log(result);
-      let status = result.data.status;
-      if(status){
-        services.login({email,password})
-        .then(loginResult => {
-          this.props.history.push('/index');
-        }).catch(err => {
-          console.log({err})
-        })
-      }else{
-        // this.setState()
-        console.log("failure")
-      }
-      
-    });
-  }
+    this.props.signupRequest(postData);
+  };
 
   //Thay đổi dữ liệu state khi người dùng nhập vào
   onChangeInput = e => {
@@ -47,6 +31,17 @@ class Singup extends React.Component {
     this.setState({
       [targetName]: targetValue
     });
+  };
+
+  //Kiểm tra alert trong userReducer để lấy trạng thái
+  onRenderAlert = () => {
+    const { alert } = this.props.usersReducer;
+    if (alert) {
+      let className = alert.status ? "text-success" : "text-danger";
+      return <p className={className}> {alert.data} </p>;
+    } else {
+      return null;
+    }
   };
 
   renderRedirect = () => {
@@ -62,9 +57,9 @@ class Singup extends React.Component {
         <div className="container">
           <div className="row">
             <div className="col-md-6">
-              <h1>Đăng Ký</h1>
+              <h1> Đăng Ký </h1>{" "}
               <div className="form-group">
-                <label>Email:</label>
+                <label> Email: </label>{" "}
                 <input
                   value={this.state.email}
                   type="email"
@@ -72,8 +67,8 @@ class Singup extends React.Component {
                   placeholder="Nhập email"
                   name="email"
                   onChange={this.onChangeInput}
-                />
-                <label>Mật Khẩu:</label>
+                />{" "}
+                <label> Mật Khẩu: </label>{" "}
                 <input
                   value={this.state.password}
                   type="password"
@@ -81,8 +76,8 @@ class Singup extends React.Component {
                   placeholder="Nhập mật khẩu"
                   name="password"
                   onChange={this.onChangeInput}
-                />
-                <label>Tên đầy đủ:</label>
+                />{" "}
+                <label> Tên đầy đủ: </label>{" "}
                 <input
                   value={this.state.fullName}
                   type="text"
@@ -90,18 +85,34 @@ class Singup extends React.Component {
                   placeholder="Nhập tên đầy đủ"
                   name="fullName"
                   onChange={this.onChangeInput}
-                />
-                <br />
+                />{" "}
+                <br /> {this.onRenderAlert()} <br />
                 <button className="btn btn-success" onClick={this.onSubmitUser}>
-                  Submit
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+                  Submit{" "}
+                </button>{" "}
+              </div>{" "}
+            </div>{" "}
+          </div>{" "}
+        </div>{" "}
       </React.Fragment>
     );
   }
 }
 
-export default Singup;
+//Lấy state của userReducer từ store
+const mapStateToProps = state => {
+  return {
+    usersReducer: state.usersReducer
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    signupRequest: param => dispatch(userAction.signupRequest(param))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Signup);

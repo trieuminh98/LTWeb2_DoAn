@@ -1,15 +1,34 @@
-import * as types from '../constants/ActionTypes';
+import * as types from "../constants/ActionTypes";
 
-var CurrentUser = localStorage.getItem('email');
-var initialState = CurrentUser ? CurrentUser : "";
+const CurrentUser = localStorage.getItem("email");
+const initialState = CurrentUser ? CurrentUser : "";
 
-var myReducer = (state = initialState, action) => {
-    switch(action.type){
-        case types.CHECK_CURRENT_USER:
-            return state;
-        default:
-            return state;
-    }
+//Trả state về reducer chính index.js/reducers 
+const userReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case types.SIGNUP_REQUEST:
+      return state;
+    case types.SIGNUP_SUCCESS:
+      return {
+        alert: {
+          status: true,
+          data: action.data
+        },
+        state
+      }
+    case types.SIGNUP_FAILURE:
+      return {
+        alert: {
+          status: false,
+          data: action.err
+        },
+        state
+      }
+    case types.CHECK_CURRENT_USER:
+      return state;
+    default:
+      return state;
+  }
 };
 
-export default myReducer;
+export default userReducer;
