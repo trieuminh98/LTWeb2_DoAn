@@ -4,9 +4,11 @@ import { Provider } from "react-redux";
 import store from "./store";
 import Signup from "./component/user/signup";
 import Login from "./component/user/login";
+import Map from "./component/index/map";
 import { Switch, Route } from "react-router-dom";
 // import {Bros} from 'react-router'
 import Header from "./component/menu/header";
+import GoogleMapComponent from "./component/index/map";
 class App extends React.Component {
   render() {
     return (
@@ -16,6 +18,7 @@ class App extends React.Component {
         <Switch>
           <Route path="/login" component={Login} />
           <Route path="/signup" component={Signup} />
+          <Route path="/map" component={Map} />
         </Switch>
       </Provider>
     );
