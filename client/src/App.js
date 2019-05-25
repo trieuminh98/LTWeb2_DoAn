@@ -5,6 +5,7 @@ import store from "./store";
 import Signup from "./component/user/signup";
 import Login from "./component/user/login";
 import Map from "./component/index/map";
+import Chat from "./component/chat/chat";
 import { Switch, Route } from "react-router-dom";
 // import {Bros} from 'react-router'
 import Header from "./component/menu/header";
@@ -19,6 +20,7 @@ class App extends React.Component {
           <Route path="/login" component={Login} />
           <Route path="/signup" component={Signup} />
           <Route path="/map" component={Map} />
+          <Route path="/chat" component={Chat} />
         </Switch>
       </Provider>
     );

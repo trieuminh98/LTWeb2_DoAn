@@ -32,6 +32,11 @@ class Header extends React.Component {
                       Bản Đồ
                     </Link>
                   </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/chat">
+                      Nhắn tin
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </nav>
