@@ -1,5 +1,6 @@
 import React from "react";
-import socketIOClient from "socket.io-client";
+import { connect } from "react-redux";
+import messageAction from "./../../actions/MessageAction";
 
 class Chat extends React.Component {
   constructor(props) {
@@ -17,18 +18,24 @@ class Chat extends React.Component {
   //Khi vào trang tự động connect tới server socket
   //Thuật ngữ  là emit event
   //Server nhận 1 event từ 1 client nào đó => Server gửi lại event đó tới tất cả client
-  componentDidMount() {
-    const endpoint = 'http://localhost:5000';
-    const socket = socketIOClient(endpoint);
-    socket.on('RECEIVE_MESSAGE',data => {
-      console.log("Nhận lại event receive message: ",data);
+  componentDidMount() {}
+
+  onRenderMessages = () => {
+    const {messages} = this.props.messageReducer;
+    if(messages.length < 1 ){
+      return null;
+    }
+    return messages.map((m,index) => {
+      return <p key={index}>
+        <span className="font-weigth-bold">{m.id}: </span>
+        {m.content}
+      </p>
     })
-    this.setState({socket})
   }
 
   onHandleSubmit = e => {
-    let {content,socket} = this.state;
-    socket.emit('SEND_MESSAGE',content);
+    let { content, socket } = this.state;
+    this.props.sendMessage(content);
     this.setState({
       content: ""
     });
@@ -37,7 +44,9 @@ class Chat extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div className="chat-contents" />
+        <div className="chat-contents">
+          {this.onRenderMessages()}
+        </div>
         <input
           type="text"
           value={this.state.content}
@@ -49,4 +58,16 @@ class Chat extends React.Component {
   }
 }
 
-export default Chat;
+const mapStateToProps = state => {
+  return {
+    messageReducer : state.messagesReducer
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return{
+    sendMessage: (params) => dispatch(messageAction.sendMessage(params))
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Chat);
