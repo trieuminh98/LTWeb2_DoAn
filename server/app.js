@@ -7,7 +7,10 @@ const mongoose = require('mongoose');
 const userRoute = require('./routes/user');
 const passport = require('passport');
 const applyPassport = require('./config/passport');
-const session = require('express-session');
+const socketManaer = require('./socket/socket');
+
+//Kết nối tới socket
+socketManaer(io);
 
 //Kết nối tới tới mongodb bằng mongoose
 mongoose.connect('mongodb://localhost:27017/minh-bike', {useNewUrlParser: true});
@@ -35,16 +38,5 @@ app.get('/',(req,res,next) => {
 })
 
 app.use('/user',userRoute);
-
-//Socket handle
-io.on('connection',(client)=>{
-  //nhận event từ 1 client
-  client.on('SEND_MESSAGE',data => {
-    //Bây giờ emit gửi lại event tới tất cả client còn lại.
-    let id = client.id;
-    let content = data;
-    io.emit('RECEIVE_MESSAGE',{id,content});
-  })
-});
 
 server.listen(port,() => console.log(`Listening on port ${port}`));
