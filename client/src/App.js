@@ -9,7 +9,6 @@ import Chat from "./component/chat/chat";
 import { Switch, Route } from "react-router-dom";
 // import {Bros} from 'react-router'
 import Header from "./component/menu/header";
-import GoogleMapComponent from "./component/index/map";
 class App extends React.Component {
   render() {
     return (

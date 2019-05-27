@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "leaflet": "^1.5.1",
+    "leaflet-geosearch": "^2.7.0",
     "lodash": "^4.17.11",
     "middleware": "^1.0.0",
     "react": "^16.8.6",

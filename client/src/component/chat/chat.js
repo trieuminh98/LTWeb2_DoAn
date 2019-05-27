@@ -34,7 +34,7 @@ class Chat extends React.Component {
   }
 
   onHandleSubmit = e => {
-    let { content, socket } = this.state;
+    let { content } = this.state;
     this.props.sendMessage(content);
     this.setState({
       content: ""
