@@ -54,7 +54,8 @@ const loginRequest = ({email, password }) => {
         let { data, status, token} = result.data;
         if(status){
           let user = {
-            fullName: data,
+            fullName: data.fullName,
+            role: data.role,
             email
           }
           localStorage.setItem('token',token);
@@ -92,6 +93,20 @@ const clearSignAlert = () => {
   };
 };
 
+const setUserOnline = (userInfo) => {
+  console.log("Du lieu nguoi dung",userInfo);
+  return {
+    type: types.SET_USER_ONLINE,
+    userInfo
+  }
+}
+
+const getAllDrivers = (drivers) => {
+  return {
+    type: types.GET_ALL_DRIVER,
+    drivers
+  }
+}
 
 const userAction = {
   checkCurrentUSer,
@@ -101,7 +116,10 @@ const userAction = {
   loginRequest,
   loginSuccess,
   loginFailure,
-  clearSignAlert
+  clearSignAlert,
+  setUserOnline,
+  getAllDrivers
 };
+
 
 export default userAction;

@@ -16,3 +16,9 @@ export const CLEAR_SIGN_ALERT = "CLEAR_SIGN_ALERT";
 //Gửi tin nhắn action types
 export const SEND_MESSAGE = "SEND_MESSAGE";
 export const RECEIVE_MESSAGE = "RECEIVE_MESSAGE";
+
+//Gửi trạng thái online/offlient action types
+export const SET_USER_ONLINE = "SET_USER_ONLINE";
+
+//Lấy tất cả tài xế đang online
+export const GET_ALL_DRIVER = "GET_ALL_DRIVER";

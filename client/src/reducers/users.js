@@ -52,6 +52,12 @@ const userReducer = (state = initialState, action) => {
         ...state,
         alert : null
       }
+    case types.GET_ALL_DRIVER:
+      console.log(action);
+      return {
+        ...state,
+        drivers: action.drivers
+      }
     case types.CHECK_CURRENT_USER:
       return state;
     default:

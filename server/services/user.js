@@ -51,10 +51,12 @@ const login = async ({ email, password }) => {
       var data = {
         //vi id cua mongodb là _id
         id: isUserExist._id,
-        email: isUserExist.email
+        email: isUserExist.email,
+        fullName : isUserExist.fullName,
+        role : isUserExist.role
       };
       var token = jwt.sign({ data}, 'minh', { expiresIn: '1h' });
-      return { status: true , token , data: isUserExist.fullName };
+      return { status: true , token , data: data };
     }else{
       return { status: false, data: "password incorrect." };
     }
