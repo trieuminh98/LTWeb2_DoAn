@@ -22,3 +22,10 @@ export const SET_USER_ONLINE = "SET_USER_ONLINE";
 
 //Lấy tất cả tài xế đang online
 export const GET_ALL_DRIVER = "GET_ALL_DRIVER";
+
+//Tìm tài xế action type
+export const FIND_DRIVERS_REQUEST = "FIND_DRIVERS_REQUEST";
+export const FIND_DRIVERS_SUCCESS = "FIND_DRIVERS_SUCCESS";
+export const FIND_DRIVERS_FAILURE = "FIND_DRIVERS_FAILURE";
+
+

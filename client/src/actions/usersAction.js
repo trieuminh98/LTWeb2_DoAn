@@ -94,7 +94,6 @@ const clearSignAlert = () => {
 };
 
 const setUserOnline = (userInfo) => {
-  console.log("Du lieu nguoi dung",userInfo);
   return {
     type: types.SET_USER_ONLINE,
     userInfo

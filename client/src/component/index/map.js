@@ -1,12 +1,16 @@
+//DLL
 import React from "react";
 import { Map, Marker, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-geosearch/assets/css/leaflet.css";
 import * as L from "leaflet";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
+import { connect } from "react-redux";
+
+//Action
 import FindDriverButton from "./findDriverButton";
 import usersAction from "./../../actions/usersAction";
-import { connect } from "react-redux";
+import bikeBookingAction from "./../../actions/bikeBookingAction";
 
 //Chỉnh sửa tránh đụng độ với webpack
 delete L.Icon.Default.prototype._getIconUrl;
@@ -59,7 +63,6 @@ class GoogleMapComponent extends React.Component {
   componentDidMount() {
     const { usersReducer, history } = this.props;
     const { currentUser } = usersReducer;
-    console.log(usersReducer);
     //Kiểm tra trạng thái đăng nhập
     if (!currentUser || currentUser === "") {
       //Nếu user chưa đăng nhập thì đi đưa qua trang đăng nhập
@@ -95,9 +98,9 @@ class GoogleMapComponent extends React.Component {
     });
   }
 
-  componentDidUpdate() {
-    if (this.osm && this.osm.current.leafletElement) {
-      const map = this.osm.current.leafletElement;
+  componentDidUpdate(prevProps) {
+    if(!prevProps.bikeBookingReducer.foundDriver && this.props.bikeBookingReducer.foundDriver){
+      window.alert("Tìm được tài xế gần nhất");
     }
   }
 
@@ -116,6 +119,13 @@ class GoogleMapComponent extends React.Component {
 
   onFindDriver = () => {
     const { currentLocation, goalLocation } = this.state;
+    if(currentLocation){
+      if(goalLocation){
+        this.props.findDriversRequest(currentLocation);
+      }else{
+        console.log("chưa nhập điểm đến");
+      }
+    }
   };
 
   onRenderDriversInMap = () => {
@@ -134,7 +144,7 @@ class GoogleMapComponent extends React.Component {
           popupAnchor: null // point from which the popup should open relative to the iconAnchor
         });
         return (
-          <Marker key= {d.clientid} icon={eachDriverIcon} position={position} />
+          <Marker key={d.username} icon={eachDriverIcon} position={position} />
         )
       });
     }
@@ -177,13 +187,15 @@ class GoogleMapComponent extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    usersReducer: state.usersReducer
+    usersReducer: state.usersReducer,
+    bikeBookingReducer: state.bikeBookingReducer
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    setUserOnline: params => dispatch(usersAction.setUserOnline(params))
+    setUserOnline: params => dispatch(usersAction.setUserOnline(params)),
+    findDriversRequest : latLng => dispatch(bikeBookingAction.findDriversRequest(latLng))
   };
 };
 
