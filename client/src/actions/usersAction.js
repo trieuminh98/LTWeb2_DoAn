@@ -2,14 +2,6 @@ import * as types from "./../constants/ActionTypes";
 import userService from "./../services/userService";
 
 //Action ở đây sẽ được View import vào
-
-//Action kiểm tra currentUser
-const checkCurrentUSer = () => {
-  return {
-    type: types.CHECK_CURRENT_USER
-  };
-};
-
 //Action gửi yêu cầu đăng ký tới server
 const signupRequest = ({ fullName, email, password }) => {
   return dispatch => {
@@ -87,6 +79,12 @@ const loginFailure = err => {
   };
 };
 
+const logOut = () => {
+  return {
+    type: types.LOG_OUT,
+  };
+};
+
 const clearSignAlert = () => {
   return {
     type: types.CLEAR_SIGN_ALERT
@@ -108,7 +106,6 @@ const getAllDrivers = (drivers) => {
 }
 
 const userAction = {
-  checkCurrentUSer,
   signupRequest,
   signupSuccess,
   signupFailure,
@@ -117,7 +114,8 @@ const userAction = {
   loginFailure,
   clearSignAlert,
   setUserOnline,
-  getAllDrivers
+  getAllDrivers,
+  logOut,
 };
 
 

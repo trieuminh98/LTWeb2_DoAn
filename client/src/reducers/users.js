@@ -58,8 +58,11 @@ const userReducer = (state = initialState, action) => {
         ...state,
         drivers: action.drivers
       }
-    case types.CHECK_CURRENT_USER:
-      return state;
+    case types.LOG_OUT:
+      return {
+        ...state,
+        currentUser : null
+      };
     default:
       return state;
   }

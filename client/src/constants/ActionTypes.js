@@ -10,6 +10,9 @@ export const LOGIN_REQUEST = "LOGIN_REQUEST";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAILURE = "LOGIN_FAILURE";
 
+//Đăng xuất action types
+export const LOG_OUT = "LOG_OUT";
+
 //Xóa alert action types
 export const CLEAR_SIGN_ALERT = "CLEAR_SIGN_ALERT";
 
@@ -27,5 +30,12 @@ export const GET_ALL_DRIVER = "GET_ALL_DRIVER";
 export const FIND_DRIVERS_REQUEST = "FIND_DRIVERS_REQUEST";
 export const FIND_DRIVERS_SUCCESS = "FIND_DRIVERS_SUCCESS";
 export const FIND_DRIVERS_FAILURE = "FIND_DRIVERS_FAILURE";
+
+//Nhận chuyến đi action type
+export const RECEIVE_BOOKING_REQUEST = "RECEIVE_BOOKING_REQUEST";
+export const RECEIVE_BOOKING_SUCCESS = "RECEIVE_BOOKING_SUCCESS";
+export const RECEIVE_BOOKING_FAILURE = "RECEIVE_BOOKING_FAILURE";
+
+
 
 

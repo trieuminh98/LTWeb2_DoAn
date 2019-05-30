@@ -6,6 +6,7 @@ import "leaflet-geosearch/assets/css/leaflet.css";
 import * as L from "leaflet";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import { connect } from "react-redux";
+import Modal from "react-modal";
 
 //Action
 import FindDriverButton from "./findDriverButton";
@@ -41,18 +42,19 @@ class GoogleMapComponent extends React.Component {
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
 
-    let userInfo = {
-      username: currentUser.fullName,
-      fullName: currentUser.fullName,
-      role: currentUser.role,
-      latLng: { lat, lng }
-    };
-
-    this.props.setUserOnline(userInfo);
+    if(currentUser){
+      let userInfo = {
+        username: currentUser.fullName,
+        fullName: currentUser.fullName,
+        role: currentUser.role,
+        latLng: { lat, lng }
+      };
+          this.props.setUserOnline(userInfo);
 
     this.setState({
       currentLocation: { lat, lng }
     });
+    }
   };
 
   //Báo lỗi khi xảy ra lỗi lấy vị trí hiện tại
@@ -98,9 +100,71 @@ class GoogleMapComponent extends React.Component {
     });
   }
 
-  componentDidUpdate(prevProps) {
-    if(!prevProps.bikeBookingReducer.foundDriver && this.props.bikeBookingReducer.foundDriver){
-      window.alert("Tìm được tài xế gần nhất");
+  // componentDidUpdate(prevProps) {
+  //   if(!prevProps.bikeBookingReducer.foundDriver && this.props.bikeBookingReducer.foundDriver){
+  //     window.alert("Tìm được tài xế gần nhất");
+  //   }
+  // }
+
+  onRenderLoadingIcon = () => {
+    const { bikeBookingReducer } = this.props;
+    let isLoading = bikeBookingReducer && bikeBookingReducer.loading ;
+    const customStyles = {
+      content: {
+        top: "50%",
+        left: "50%",
+        right: "auto",
+        bottom: "auto",
+        marginRight: "-50%",
+        transform: "translate(-50%, -50%)"
+      },
+      overlay: {zIndex : 9999}
+    };
+    return (
+      <Modal
+        isOpen={isLoading}
+        style={customStyles}
+        contentLabel="system"
+      >
+      <h1>Đang tìm tài xế....</h1>
+      </Modal>
+    )
+  };
+
+  onAcceptBooking = (guestInfo) =>{
+    this.props.acceptBookingSuccess(guestInfo);
+  }
+
+  onRejectBooking = (guestInfo) =>{
+    this.props.acceptBookingFailure(guestInfo);
+  }
+
+  onRenderBookingForm = () => {
+    const {bikeBookingReducer} = this.props;
+    let isReceiveFormGuest = bikeBookingReducer.guest && typeof bikeBookingReducer.guest !== 'undefined'  && !bikeBookingReducer.isDriving;
+    if(isReceiveFormGuest){
+      const customStyles = {
+        content: {
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)"
+        },
+        overlay: {zIndex : 9999}
+      };
+      return (
+        <Modal
+          isOpen={isReceiveFormGuest}
+          style={customStyles}
+          contentLabel="system"
+        >
+        <h1>Tìm được 1 chuyến đi từ {bikeBookingReducer.guest.username}</h1>
+        <button className ="btn btn-success" onClick={(e)=>this.onAcceptBooking(bikeBookingReducer.guest)}>Chấp nhận</button>
+        <button className ="btn btn-danger"onClick={(e)=>this.onRejectBooking(bikeBookingReducer.guest)}>Từ chối</button>
+        </Modal>
+      )
     }
   }
 
@@ -119,10 +183,10 @@ class GoogleMapComponent extends React.Component {
 
   onFindDriver = () => {
     const { currentLocation, goalLocation } = this.state;
-    if(currentLocation){
-      if(goalLocation){
+    if (currentLocation) {
+      if (goalLocation) {
         this.props.findDriversRequest(currentLocation);
-      }else{
+      } else {
         console.log("chưa nhập điểm đến");
       }
     }
@@ -133,7 +197,7 @@ class GoogleMapComponent extends React.Component {
     const { drivers } = usersReducer;
     if (drivers && drivers.length > 0) {
       return drivers.map(d => {
-        const position = [d.latLng.lat,d.latLng.lng];
+        const position = [d.latLng.lat, d.latLng.lng];
         const eachDriverIcon = L.icon({
           iconUrl:
             "https://b.sccpre.cat/mypng/small/111-1112464_png-file-svg-driver-line-icon.png",
@@ -145,12 +209,14 @@ class GoogleMapComponent extends React.Component {
         });
         return (
           <Marker key={d.username} icon={eachDriverIcon} position={position} />
-        )
+        );
       });
     }
   };
 
   render() {
+    const {bikeBookingReducer} = this.props;
+    const {foundDriver,guest} = bikeBookingReducer;
     const position = [10.76206, 106.683073]; //Lấy từ trang chủ leaflet,Latitude - Longitude
     const zoom = 19;
     var myIcon = L.icon({
@@ -164,7 +230,11 @@ class GoogleMapComponent extends React.Component {
     });
     return (
       <React.Fragment>
+        {foundDriver ?  <p>Tài xế cho bạn: {foundDriver.username}</p> : ''}
+        {guest ? <p>Khách hàng của bạn: {guest.username}</p> : ''}
         <FindDriverButton onFindDriver={this.onFindDriver} />
+        {this.onRenderLoadingIcon()};
+        {this.onRenderBookingForm()};
         <Map
           center={position}
           zoom={zoom}
@@ -195,7 +265,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setUserOnline: params => dispatch(usersAction.setUserOnline(params)),
-    findDriversRequest : latLng => dispatch(bikeBookingAction.findDriversRequest(latLng))
+    findDriversRequest: latLng =>dispatch(bikeBookingAction.findDriversRequest(latLng)),
+    acceptBookingSuccess: (guestInfo) => dispatch(bikeBookingAction.acceptBookingSuccess(guestInfo)),
+    acceptBookingFailure: (guestInfo) => dispatch(bikeBookingAction.acceptBookingFailure(guestInfo))
   };
 };
 

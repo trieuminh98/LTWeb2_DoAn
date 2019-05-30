@@ -22,7 +22,7 @@ class Login extends React.Component {
     this.props.loginRequest(postData);
   };
 
-  //Thay đổi dữ liệu state khi người dùng nhậ
+  //Thay đổi dữ liệu state khi người dùng nhập
   onChangeInput = e => {
     let targetValue = e.target.value;
     let targetName = e.target.name;
@@ -33,6 +33,17 @@ class Login extends React.Component {
 
   componentDidMount(){
     this.props.clearSignAlert();
+    const {currentUser} = this.props.usersReducer;
+    if(currentUser){
+      this.props.history.push('/index');
+    }
+  }
+
+  componentDidUpdate() {
+    const {currentUser} = this.props.usersReducer;
+    if(currentUser){
+      this.props.history.push('/index');
+    }
   }
 
   //Kiểm tra alert trong userReducer để lấy trạng thái

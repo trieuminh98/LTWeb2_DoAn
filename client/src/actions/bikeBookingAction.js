@@ -21,10 +21,34 @@ const findDriversFailure = () => {
         }
 }
 
+const receiBookingRequest = (guestInfo) => {
+    return {
+        type: types.RECEIVE_BOOKING_REQUEST,
+        guestInfo
+    }
+}
+
+const acceptBookingSuccess = (guestInfo) => {
+    return {
+        type: types.RECEIVE_BOOKING_SUCCESS,
+        guestInfo
+    }
+}
+
+const acceptBookingFailure = (guestInfo) => {
+    return {
+        type: types.RECEIVE_BOOKING_FAILURE,
+        guestInfo
+    }
+}
+
 const bikeBookingAction = {
     findDriversRequest,
     findDriversSuccess,
-    findDriversFailure
+    findDriversFailure,
+    receiBookingRequest,
+    acceptBookingSuccess,
+    acceptBookingFailure
 }
 
 export default bikeBookingAction

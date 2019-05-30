@@ -12,7 +12,11 @@ const middleware = socket => {
       case "SET_USER_ONLINE":
         socket.emit(action.type, action.userInfo);
       case "FIND_DRIVERS_REQUEST":
-        socket.emit(action.type,action.latLng);
+        socket.emit(action.type, action.latLng);
+      case "RECEIVE_BOOKING_SUCCESS":
+        socket.emit(action.type, action.guestInfo);
+      case "RECCEIVE_BOOKING_FAILURE":
+        socket.emit(action.type, action.guestInfo);
       default:
         break;
     }
@@ -26,17 +30,21 @@ const dispatcher = (socket, dispatchFn) => {
     dispatchFn(messageAction.receiveMessage(data));
   });
 
-
   socket.on("GET_ALL_DRIVER", drivers => {
-    dispatchFn(userAction.getAllDrivers(drivers));  });
+    dispatchFn(userAction.getAllDrivers(drivers));
+  });
 
-  socket.on("FIND_DRIVERS_RESULT",driver => {
-    if(driver && typeof driver !== 'undefined'){
-      dispatchFn(bikeBookingAction.findDriversSuccess(driver))
-    }else{
-      dispatchFn(bikeBookingAction.findDriversFailure(driver))
-    }
-  })
+  socket.on("FIND_DRIVER_SUCCESS", driver => {
+    dispatchFn(bikeBookingAction.findDriversSuccess(driver));
+  });
+
+  socket.on("FIND_DRIVERS_FAILURE", () => {
+    dispatchFn(bikeBookingAction.findDriversFailure());
+  });
+
+  socket.on("RECEIVE_BOOKING_REQUEST", guestInfo => {
+    dispatchFn(bikeBookingAction.receiBookingRequest(guestInfo));
+  });
 };
 
 const socketManager = { middleware, dispatcher };

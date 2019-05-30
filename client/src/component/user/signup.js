@@ -23,6 +23,20 @@ class Signup extends React.Component {
     this.props.signupRequest(postData);
   };
 
+  componentDidUpdate() {
+    const {alert} = this.props.usersReducer;
+    if(alert){
+      this.props.history.push('/login');
+    }
+  }
+
+  componentDidMount(){
+    this.props.clearSignAlert();
+    const {currentUser} = this.props.usersReducer;
+    if(currentUser){
+      this.props.history.push('/index');
+    }
+  }
   //Thay đổi dữ liệu state khi người dùng nhập vào
   onChangeInput = e => {
     let targetValue = e.target.value;
