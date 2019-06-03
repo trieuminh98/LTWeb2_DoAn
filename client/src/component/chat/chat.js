@@ -44,10 +44,10 @@ class Chat extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div className="chat-contents">
+        <div className="chat-contents" id="chat">
           {this.onRenderMessages()}
         </div>
-        <input
+        <input 
           type="text"
           value={this.state.content}
           onChange={this.onHandleChange}

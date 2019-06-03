@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
+    "browserfs": "^1.4.3",
     "leaflet": "^1.5.1",
     "leaflet-geosearch": "^2.7.0",
     "lodash": "^4.17.11",

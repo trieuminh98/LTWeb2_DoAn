@@ -17,6 +17,12 @@ const middleware = socket => {
         socket.emit(action.type, action.guestInfo);
       case "RECCEIVE_BOOKING_FAILURE":
         socket.emit(action.type, action.guestInfo);
+      case "PICKED_UP_REQUEST":
+        socket.emit(action.type, action.foundDriver);
+      case "TO_GOAL_REQUEST":
+        socket.emit(action.type, action.foundDriver);
+      case "PAYING_REQUEST":
+        socket.emit(action.type, action.guest);
       default:
         break;
     }
@@ -44,6 +50,18 @@ const dispatcher = (socket, dispatchFn) => {
 
   socket.on("RECEIVE_BOOKING_REQUEST", guestInfo => {
     dispatchFn(bikeBookingAction.receiBookingRequest(guestInfo));
+  });
+
+  socket.on("PICKED_UP_SUCCESS", () => {
+    dispatchFn(bikeBookingAction.pickedUpSuccess());
+  });
+
+  socket.on("TO_GOAL_SUCCESS", () => {
+    dispatchFn(bikeBookingAction.toGoalSuccess());
+  });
+
+  socket.on("PAYING_SUCCESS", () => {
+    dispatchFn(bikeBookingAction.payingSuccess());
   });
 };
 

@@ -1,40 +1,54 @@
+//import thư viện
 import React from "react";
 import { Redirect } from "react-router";
 import { connect } from "react-redux";
 import usersAction from "./../../actions/usersAction";
+
+//import css
+import "./../../cssWebpack/signup.css";
+
 class Signup extends React.Component {
   constructor() {
     super();
     this.state = {
       email: "",
       password: "",
-      fullName: ""
+      fullName: "",
+      number: "",
+      role: "",
+      filePortrait: null,
+      fileLicense: null
     };
   }
 
   //Click submit gọi tới usersAction signupRequest
   onSubmitUser = () => {
-    let { email, password, fullName } = this.state;
+    let { email, password, fullName, number ,role } = this.state;
+    const fdData = new FormData();
+    fdData.append("filePortrait", this.state.filePortrait);
     let postData = {
       email,
+      number,
       password,
-      fullName
+      fullName,
+      role,
+      fdData
     };
     this.props.signupRequest(postData);
   };
 
   componentDidUpdate() {
-    const {alert} = this.props.usersReducer;
-    if(alert){
-      this.props.history.push('/login');
+    const { alert } = this.props.usersReducer;
+    if (alert) {
+      this.props.history.push("/login");
     }
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.props.clearSignAlert();
-    const {currentUser} = this.props.usersReducer;
-    if(currentUser){
-      this.props.history.push('/index');
+    const { currentUser } = this.props.usersReducer;
+    if (currentUser) {
+      this.props.history.push("/index");
     }
   }
   //Thay đổi dữ liệu state khi người dùng nhập vào
@@ -43,6 +57,19 @@ class Signup extends React.Component {
     let targetName = e.target.name;
     this.setState({
       [targetName]: targetValue
+    });
+    console.log(this.state);
+  };
+
+  onChangeHandlerPortrait = event => {
+    this.setState({
+      filePortrait: event.target.files[0]
+    });
+  };
+
+  onChangeHandlerLicense = event => {
+    this.setState({
+      fileLicense: event.target.files[0]
     });
   };
 
@@ -63,50 +90,164 @@ class Signup extends React.Component {
     }
   };
 
+  onRenderInputFile = () => {
+    if(this.state.role === "driver"){
+      return (
+        <div>
+          <div className="form-row">
+            <div className="name">Chân dung</div>
+            <div className="value">
+              <div className="input-group js-input-file">
+                <input
+                  className="input-file"
+                  type="file"
+                  name="filePortrait"
+                  id="filePortrait"
+                  onChange={this.onChangeHandlerPortrait}
+                />
+                <label className="label--file" htmlFor="filePortrait">
+                  Choose file
+                </label>
+                <span className="input-file__info">
+                  {this.state.filePortrait
+                    ? this.state.filePortrait.name
+                    : "No file chosen"}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="name">Biển số xe</div>
+            <div className="value">
+              <div className="input-group js-input-file">
+                <input
+                  className="input-file"
+                  type="file"
+                  name="fileLicense"
+                  id="fileLicense"
+                  onChange={this.onChangeHandlerLicense}
+                />
+                <label className="label--file" htmlFor="fileLicense">
+                  Choose file
+                </label>
+                <span className="input-file__info">
+                  {this.state.fileLicense
+                    ? this.state.fileLicense.name
+                    : "No file chosen"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  };
+
   render() {
-    console.log("render ");
     return (
       <React.Fragment>
-        <div className="container">
-          <div className="row">
-            <div className="col-md-6">
-              <h1> Đăng Ký </h1>{" "}
-              <div className="form-group">
-                <label> Email: </label>{" "}
-                <input
-                  value={this.state.email}
-                  type="email"
-                  className="form-control"
-                  placeholder="Nhập email"
-                  name="email"
-                  onChange={this.onChangeInput}
-                />{" "}
-                <label> Mật Khẩu: </label>{" "}
-                <input
-                  value={this.state.password}
-                  type="password"
-                  className="form-control"
-                  placeholder="Nhập mật khẩu"
-                  name="password"
-                  onChange={this.onChangeInput}
-                />{" "}
-                <label> Tên đầy đủ: </label>{" "}
-                <input
-                  value={this.state.fullName}
-                  type="text"
-                  className="form-control"
-                  placeholder="Nhập tên đầy đủ"
-                  name="fullName"
-                  onChange={this.onChangeInput}
-                />{" "}
-                <br /> {this.onRenderAlert()} <br />
-                <button className="btn btn-success" onClick={this.onSubmitUser}>
-                  Submit{" "}
-                </button>{" "}
-              </div>{" "}
-            </div>{" "}
-          </div>{" "}
-        </div>{" "}
+        <div className="page-wrapper bg-dark p-t-100 p-b-50">
+          <div className="wrapper wrapper--w900">
+            <div className="card card-6">
+              <div className="card-heading">
+                <h2 className="title">Đăng ký thành viên</h2>
+              </div>
+              <div className="card-body">
+                <form method="POST">
+                  <div className="form-row">
+                    <div className="name">Tên đầy đủ:</div>
+                    <div className="value">
+                      <input
+                        value={this.state.fullName}
+                        className="input--style-6"
+                        type="text"
+                        name="fullName"
+                        onChange={this.onChangeInput}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="name">Địa chỉ email: </div>
+                    <div className="value">
+                      <div className="input-group">
+                        <input
+                          value={this.state.email}
+                          className="input--style-6"
+                          type="email"
+                          name="email"
+                          placeholder="vidu@email.com"
+                          onChange={this.onChangeInput}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="name">Mật khẩu</div>
+                    <div className="value">
+                      <div className="input-group">
+                        <input
+                          className="input--style-6"
+                          name="password"
+                          placeholder="Nhập mật khẩu"
+                          value={this.state.password}
+                          type="password"
+                          onChange={this.onChangeInput}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="name">Số điện thoại:</div>
+                    <div className="value">
+                      <input
+                        value={this.state.number}
+                        className="input--style-6"
+                        type="text"
+                        name="number"
+                        onChange={this.onChangeInput}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-check">
+                      <label className="form-check-label">Người dùng</label>
+                      <input
+                        type="radio"
+                        className="form-check-input"
+                        name="role"
+                        value="user"
+                        onChange={this.onChangeInput}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-check">
+                      <label className="form-check-label">Tài xế</label>
+                      <input
+                        type="radio"
+                        className="form-check-input"
+                        name="role"
+                        value="driver"
+                        onChange={this.onChangeInput}
+                      />
+                    </div>
+                  </div>
+                  {this.onRenderInputFile()};
+                </form>
+              </div>
+              <div className="card-footer">
+                <button
+                  className="btn btn--radius-2 btn--blue-2"
+                  type="submit"
+                  onClick={this.onSubmitUser}
+                >
+                  Đăng ký
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        ); } });
       </React.Fragment>
     );
   }
@@ -122,7 +263,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     signupRequest: param => dispatch(usersAction.signupRequest(param)),
-    clearSignAlert : () => dispatch(usersAction.clearSignAlert())
+    clearSignAlert: () => dispatch(usersAction.clearSignAlert())
   };
 };
 

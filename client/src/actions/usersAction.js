@@ -3,14 +3,19 @@ import userService from "./../services/userService";
 
 //Action ở đây sẽ được View import vào
 //Action gửi yêu cầu đăng ký tới server
-const signupRequest = ({ fullName, email, password }) => {
+const signupRequest = postData => {
   return dispatch => {
     userService
-      .signup({ fullName, email, password })
+      .signup(postData)
       .then(result => {
         let { status, data } = result.data;
-        if (status) {
-          dispatch(signupSuccess(data));
+        if (status) { 
+            userService.saveImg({fdData:postData.fdData ,id: result.data.id})
+            .then(result1 => {
+              if(result1.status){
+                dispatch(signupSuccess(data));
+              }
+            })
         } else {
           dispatch(signupFailure(data));
         }

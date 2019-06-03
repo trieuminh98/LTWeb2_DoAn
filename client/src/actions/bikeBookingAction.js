@@ -42,13 +42,58 @@ const acceptBookingFailure = (guestInfo) => {
     }
 }
 
+const pickedUpRequest = (foundDriver) => {
+    return {
+        type: types.PICKED_UP_REQUEST,
+        foundDriver
+    }
+}
+
+const pickedUpSuccess = () => {
+    return {
+        type: types.PICKED_UP_SUCCESS,
+    }
+}
+
+const toGoalRequest = (foundDriver) => {
+    return {
+        type: types.TO_GOAL_REQUEST,
+        foundDriver
+    }
+}
+
+const toGoalSuccess = () => {
+    return {
+        type: types.TO_GOAL_SUCCESS,
+    }
+}
+
+const payingRequest = (guest) => {
+    return {
+        type: types.PAYING_REQUEST,
+        guest
+    }
+}
+
+const payingSuccess = () => {
+    return {
+        type: types.PAYING_SUCCESS,
+    }
+}
+
 const bikeBookingAction = {
     findDriversRequest,
     findDriversSuccess,
     findDriversFailure,
     receiBookingRequest,
     acceptBookingSuccess,
-    acceptBookingFailure
+    acceptBookingFailure,
+    pickedUpRequest,
+    pickedUpSuccess,
+    toGoalRequest,
+    toGoalSuccess,
+    payingRequest,
+    payingSuccess
 }
 
 export default bikeBookingAction

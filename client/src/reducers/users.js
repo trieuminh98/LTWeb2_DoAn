@@ -14,19 +14,19 @@ const userReducer = (state = initialState, action) => {
       return state;
     case types.SIGNUP_SUCCESS:
       return {
+        ...state,
         alert: {
           status: true,
           data: action.data
         },
-        state
       };
     case types.SIGNUP_FAILURE:
       return {
+        ...state,
         alert: {
           status: false,
           data: action.err
         },
-        state
       };
     case types.LOGIN_REQUEST:
       return state;

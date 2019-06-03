@@ -42,18 +42,18 @@ class GoogleMapComponent extends React.Component {
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
 
-    if(currentUser){
+    if (currentUser) {
       let userInfo = {
         username: currentUser.fullName,
         fullName: currentUser.fullName,
         role: currentUser.role,
         latLng: { lat, lng }
       };
-          this.props.setUserOnline(userInfo);
+      this.props.setUserOnline(userInfo);
 
-    this.setState({
-      currentLocation: { lat, lng }
-    });
+      this.setState({
+        currentLocation: { lat, lng }
+      });
     }
   };
 
@@ -108,7 +108,7 @@ class GoogleMapComponent extends React.Component {
 
   onRenderLoadingIcon = () => {
     const { bikeBookingReducer } = this.props;
-    let isLoading = bikeBookingReducer && bikeBookingReducer.loading ;
+    let isLoading = bikeBookingReducer && bikeBookingReducer.loading;
     const customStyles = {
       content: {
         top: "50%",
@@ -118,31 +118,44 @@ class GoogleMapComponent extends React.Component {
         marginRight: "-50%",
         transform: "translate(-50%, -50%)"
       },
-      overlay: {zIndex : 9999}
+      overlay: { zIndex: 9999 }
     };
     return (
-      <Modal
-        isOpen={isLoading}
-        style={customStyles}
-        contentLabel="system"
-      >
-      <h1>Đang tìm tài xế....</h1>
+      <Modal isOpen={isLoading} style={customStyles} contentLabel="system">
+        <h1>Đang tìm tài xế....</h1>
       </Modal>
-    )
+    );
   };
 
-  onAcceptBooking = (guestInfo) =>{
+  onAcceptBooking = guestInfo => {
     this.props.acceptBookingSuccess(guestInfo);
-  }
+  };
 
-  onRejectBooking = (guestInfo) =>{
+  onRejectBooking = guestInfo => {
     this.props.acceptBookingFailure(guestInfo);
-  }
+  };
 
-  onRenderBookingForm = () => {
-    const {bikeBookingReducer} = this.props;
-    let isReceiveFormGuest = bikeBookingReducer.guest && typeof bikeBookingReducer.guest !== 'undefined'  && !bikeBookingReducer.isDriving;
-    if(isReceiveFormGuest){
+  onRenderIsDrivingForm = () => {
+    const { bikeBookingReducer } = this.props;
+    const onPicking =
+      (bikeBookingReducer.guest &&
+        typeof bikeBookingReducer.guest !== "undefined") ||
+      (bikeBookingReducer.foundDriver &&
+        typeof bikeBookingReducer.foundDriver !== "undefined");
+    const {
+      isPickedUp,
+      foundDriver,
+      guest,
+      pickedUp,
+      isToGoal,
+      toGoal,
+      payed,
+      isPayed
+    } = bikeBookingReducer;
+    const onToGoal = (foundDriver && isPickedUp) || (guest && pickedUp);
+    const onPay = (foundDriver && isToGoal) || (guest && toGoal);
+    const onComplete = (foundDriver && payed) || (guest && isPayed);
+    if (onPicking) {
       const customStyles = {
         content: {
           top: "50%",
@@ -152,7 +165,162 @@ class GoogleMapComponent extends React.Component {
           marginRight: "-50%",
           transform: "translate(-50%, -50%)"
         },
-        overlay: {zIndex : 9999}
+        overlay: { zIndex: 9999 }
+      };
+      return (
+        <Modal isOpen={onPicking} style={customStyles} contentLabel="system">
+          <h1>Bắt đầu vận chuyển</h1>
+          {this.onRenderDriverPickedUp()}
+          {onToGoal ? this.onRenderDrivingToGoal() : ""}
+          {onPay ? this.onRenderPaying() : ""}
+          {onComplete ? this.onRenderComplete() : ""}
+        </Modal>
+      );
+    }
+  };
+
+  onRenderComplete = () => {
+    const { bikeBookingReducer } = this.props;
+    const { isPayed, payed, guest } = bikeBookingReducer;
+    if (isPayed || payed) {
+      return (
+        <button
+          className="btn btn-success"
+          onClick={e => this.onCompleteRequest(guest)}
+        >
+          Hoàn thành chuyến đi
+        </button>
+      );
+    }
+  };
+
+  onPayingRequest = guest => {
+    this.props.onPayingRequest(guest);
+  };
+
+  onRenderPaying = () => {
+    const { bikeBookingReducer } = this.props;
+    const { isPayed, payed, guest } = bikeBookingReducer;
+    if (!isPayed && guest) {
+      return (
+        <div>
+          <span>Tổng tiền: </span>
+          <button
+            className="btn btn-success"
+            onClick={e => this.onPayingRequest(guest)}
+          >
+            Nhận Tiền
+          </button>
+        </div>
+      );
+    } else if (isPayed && guest) {
+      return (
+        <div>
+          <span>Tổng tiền : </span>
+          <span>Đã nhận</span>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <span>Tổng tiền: </span>
+          <span>{payed ? "Đã trả" : "Đang đợi trả tiền..."}</span>
+        </div>
+      );
+    }
+  };
+
+  onToGoalRequest = foundDriver => {
+    this.props.onToGoalRequest(foundDriver);
+  };
+
+  onRenderDrivingToGoal = () => {
+    const { bikeBookingReducer } = this.props;
+    const { toGoal, isToGoal, foundDriver } = bikeBookingReducer;
+    if (!isToGoal && foundDriver) {
+      return (
+        <div>
+          <span>Đã tới điểm đến</span>
+          <button
+            className="btn btn-success"
+            onClick={e => this.onToGoalRequest(foundDriver)}
+          >
+            Chấp nhận
+          </button>
+        </div>
+      );
+    } else if (isToGoal && foundDriver) {
+      return (
+        <div>
+          <span>Đã tới điểm đến: </span>
+          <span>Đã hoàn thành</span>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <span>Đã tới điểm đến: </span>
+          <span>{toGoal ? "Đã hoàn thành" : "Đang đợi..."}</span>
+        </div>
+      );
+    }
+  };
+
+  onPickedUp = foundDriver => {
+    this.props.pickedUpRequest(foundDriver);
+  };
+
+  onRenderDriverPickedUp = () => {
+    const { bikeBookingReducer } = this.props;
+    const { pickedUp, isPickedUp, foundDriver } = bikeBookingReducer;
+    const isPickedUpFalse = !isPickedUp && foundDriver;
+    const isPickedUpTrue = isPickedUp && foundDriver;
+    if (isPickedUpFalse) {
+      return (
+        <div>
+          <span>Tài xế đã tới đón:</span>
+          <button
+            className="btn btn-success"
+            onClick={e => this.onPickedUp(foundDriver)}
+          >
+            Chấp nhận
+          </button>
+        </div>
+      );
+    } else if (isPickedUpTrue) {
+      return (
+        <div>
+          <span>Tài xế đã tới đón:</span>
+          <span>Đã hoàn thành</span>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <span>Tài xế đã tới đón:</span>
+          <span>{pickedUp ? "Đã hoàn thành" : "Đang đợi..."}</span>
+        </div>
+      );
+    }
+  };
+
+  onRenderBookingForm = () => {
+    const { bikeBookingReducer } = this.props;
+    let isReceiveFormGuest =
+      bikeBookingReducer.guest &&
+      typeof bikeBookingReducer.guest !== "undefined" &&
+      !bikeBookingReducer.isDriving;
+    if (isReceiveFormGuest) {
+      const customStyles = {
+        content: {
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)"
+        },
+        overlay: { zIndex: 9999 }
       };
       return (
         <Modal
@@ -160,13 +328,23 @@ class GoogleMapComponent extends React.Component {
           style={customStyles}
           contentLabel="system"
         >
-        <h1>Tìm được 1 chuyến đi từ {bikeBookingReducer.guest.username}</h1>
-        <button className ="btn btn-success" onClick={(e)=>this.onAcceptBooking(bikeBookingReducer.guest)}>Chấp nhận</button>
-        <button className ="btn btn-danger"onClick={(e)=>this.onRejectBooking(bikeBookingReducer.guest)}>Từ chối</button>
+          <h1>Tìm được 1 chuyến đi từ {bikeBookingReducer.guest.username}</h1>
+          <button
+            className="btn btn-success"
+            onClick={e => this.onAcceptBooking(bikeBookingReducer.guest)}
+          >
+            Chấp nhận
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={e => this.onRejectBooking(bikeBookingReducer.guest)}
+          >
+            Từ chối
+          </button>
         </Modal>
-      )
+      );
     }
-  }
+  };
 
   //Sự kiện kiểm tra vị trí mới mỗi khi map được di chuyển
   onMoveEnd = event => {
@@ -215,8 +393,8 @@ class GoogleMapComponent extends React.Component {
   };
 
   render() {
-    const {bikeBookingReducer} = this.props;
-    const {foundDriver,guest} = bikeBookingReducer;
+    const { bikeBookingReducer } = this.props;
+    const { foundDriver, guest } = bikeBookingReducer;
     const position = [10.76206, 106.683073]; //Lấy từ trang chủ leaflet,Latitude - Longitude
     const zoom = 19;
     var myIcon = L.icon({
@@ -230,11 +408,12 @@ class GoogleMapComponent extends React.Component {
     });
     return (
       <React.Fragment>
-        {foundDriver ?  <p>Tài xế cho bạn: {foundDriver.username}</p> : ''}
-        {guest ? <p>Khách hàng của bạn: {guest.username}</p> : ''}
+        {foundDriver ? <p>Tài xế cho bạn: {foundDriver.username}</p> : ""}
+        {guest ? <p>Khách hàng của bạn: {guest.username}</p> : ""}
         <FindDriverButton onFindDriver={this.onFindDriver} />
-        {this.onRenderLoadingIcon()};
-        {this.onRenderBookingForm()};
+        {this.onRenderIsDrivingForm()}
+        {this.onRenderLoadingIcon()}
+        {this.onRenderBookingForm()}
         <Map
           center={position}
           zoom={zoom}
@@ -265,9 +444,17 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setUserOnline: params => dispatch(usersAction.setUserOnline(params)),
-    findDriversRequest: latLng =>dispatch(bikeBookingAction.findDriversRequest(latLng)),
-    acceptBookingSuccess: (guestInfo) => dispatch(bikeBookingAction.acceptBookingSuccess(guestInfo)),
-    acceptBookingFailure: (guestInfo) => dispatch(bikeBookingAction.acceptBookingFailure(guestInfo))
+    findDriversRequest: latLng =>
+      dispatch(bikeBookingAction.findDriversRequest(latLng)),
+    acceptBookingSuccess: guestInfo =>
+      dispatch(bikeBookingAction.acceptBookingSuccess(guestInfo)),
+    acceptBookingFailure: guestInfo =>
+      dispatch(bikeBookingAction.acceptBookingFailure(guestInfo)),
+    pickedUpRequest: foundDriver =>
+      dispatch(bikeBookingAction.pickedUpRequest(foundDriver)),
+    onToGoalRequest: foundDriver =>
+      dispatch(bikeBookingAction.toGoalRequest(foundDriver)),
+    onPayingRequest: guest => dispatch(bikeBookingAction.payingRequest(guest))
   };
 };
 

@@ -1,4 +1,5 @@
 import Axios from 'axios';
+
 const API = "http://localhost:5000";
 const token = localStorage.getItem("token") ? localStorage.getItem("token") : "";
 // if(token){
@@ -13,6 +14,14 @@ const signup = (data) => {
       'Content-Type': 'application/json'
     }
   });
+}
+
+const saveImg = (data) => {
+  return Axios({
+    method: "post",
+    url: `${API}/user/saveimg`,
+    data,
+    });
 }
 
 const login = data => {
@@ -42,5 +51,6 @@ const getProfile = () => {
 export default {
   signup,
   login,
-  getProfile
+  getProfile,
+  saveImg
 }

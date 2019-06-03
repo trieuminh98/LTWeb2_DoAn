@@ -7,10 +7,10 @@ const mongoose = require('mongoose');
 const userRoute = require('./routes/user');
 const passport = require('passport');
 const applyPassport = require('./config/passport');
-const socketManaer = require('./socket/socket');
+const socketManager = require('./socket/socket');
 
 //Kết nối tới socket
-socketManaer(io);
+socketManager(io);
 
 //Kết nối tới tới mongodb bằng mongoose
 mongoose.connect('mongodb://localhost:27017/minh-bike', {useNewUrlParser: true});
@@ -28,10 +28,8 @@ passport.use(passport.initialize());
 applyPassport(passport);
 
 
-
-
 app.use(express.json());
-app.use(express.urlencoded({extended: true})); //parse về json để nhận req bên client
+app.use(express.urlencoded({extended: false})); //parse về json để nhận req bên client
 
 app.get('/',(req,res,next) => {
     res.json({users: [{username: 'minh' }]})
