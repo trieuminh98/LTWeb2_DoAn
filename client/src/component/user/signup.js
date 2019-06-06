@@ -15,7 +15,7 @@ class Signup extends React.Component {
       password: "",
       fullName: "",
       number: "",
-      role: "",
+      role: "user",
       filePortrait: null,
       fileLicense: null
     };
@@ -24,7 +24,7 @@ class Signup extends React.Component {
   //Click submit gọi tới usersAction signupRequest
   onSubmitUser = () => {
     let { email, password, fullName, number, role } = this.state;
-    if (role == "user") {
+    if (role === "user") {
       const fdData = new FormData();
       fdData.append("email", email);
       fdData.append("number", number);

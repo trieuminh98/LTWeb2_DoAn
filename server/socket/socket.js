@@ -128,8 +128,8 @@ module.exports = function(io) {
         } else {
           //Tìm tài xế gần nhất với user
           let sortDrivers = allDrivers.sort((driver1, driver2) => {
-            let userLat = latLng.lat;
-            let userLng = latLng.lng;
+            let userLat = latLng.currentLocation.lat;
+            let userLng = latLng.currentLocation.lng;
 
             let driver1Lat = driver1.latLng.lat;
             let driver1Lng = driver1.latLng.lng;
@@ -159,14 +159,22 @@ module.exports = function(io) {
             //Gửi event booking tới tài xế
             let driver01Info = sortDrivers[0];
             if (driver01Info) {
-              let userLat = latLng.lat;
-              let userLng = latLng.lng;
+              let userLat = latLng.currentLocation.lat;
+              let userLng = latLng.currentLocation.lng;
+              let goalLat = latLng.goalLocation.lat;
+              let goalLng = latLng.goalLocation.lng;
               let guestInfo = connectedUser.find(
                 u => u.latLng.lat === userLat && u.latLng.lng === userLng
               );
+              let money = (distance(userLat,userLng,goalLat,goalLng,"K")*2000);
+              console.log("money",money);
+              let guestMoneyInfo = {
+                guestInfo,
+                money
+              }
               io.to(driver01Info.clientid).emit(
                 "RECEIVE_BOOKING_REQUEST",
-                guestInfo
+                guestMoneyInfo
               );
             }
             // io.to(sortDrivers[0].clientid).emit('RECEIVE_BOOKING_REQUEST')

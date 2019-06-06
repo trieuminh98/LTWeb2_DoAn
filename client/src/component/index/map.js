@@ -354,7 +354,8 @@ class GoogleMapComponent extends React.Component {
   onMoveEnd = event => {
     if (this.osm && this.osm.current.leafletElement) {
       const map = this.osm.current.leafletElement;
-      if (this.state.isSearchGoalLocation) {
+      if (this.state.isSearchGoalLocation)
+      {
         this.setState({
           goalLocation: map.getCenter(),
           isSearchGoalLocation: false
@@ -365,9 +366,14 @@ class GoogleMapComponent extends React.Component {
 
   onFindDriver = () => {
     const { currentLocation, goalLocation } = this.state;
+    console.log(goalLocation);
+    const currentAndGoal = {
+      currentLocation,
+      goalLocation
+    }
     if (currentLocation) {
       if (goalLocation) {
-        this.props.findDriversRequest(currentLocation);
+        this.props.findDriversRequest(currentAndGoal);
       } else {
         console.log("chưa nhập điểm đến");
       }

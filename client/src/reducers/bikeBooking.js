@@ -9,7 +9,8 @@ const initialState = {
   isToGoal: false,
   toGoal: false,
   isPayed: false,
-  payed: false
+  payed: false,
+  money: null,
 };
 
 //Trả state về reducer chính index.js/reducers
@@ -35,7 +36,8 @@ const bikeBookingReducer = (state = initialState, action) => {
     case types.RECEIVE_BOOKING_REQUEST:
       return {
         ...state,
-        guest: action.guestInfo
+        guest: action.guestInfo.guestInfo,
+        money: action.guestInfo.money
       };
     case types.RECEIVE_BOOKING_SUCCESS:
       return {
