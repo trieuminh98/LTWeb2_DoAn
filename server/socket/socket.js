@@ -166,7 +166,7 @@ module.exports = function(io) {
               let guestInfo = connectedUser.find(
                 u => u.latLng.lat === userLat && u.latLng.lng === userLng
               );
-              let money = (distance(userLat,userLng,goalLat,goalLng,"K")*2000);
+              let money = Math.round((distance(userLat,userLng,goalLat,goalLng,"K")*2000));
               console.log("money",money);
               let guestMoneyInfo = {
                 guestInfo,
@@ -189,11 +189,17 @@ module.exports = function(io) {
       }
     });
 
-    client.on("RECEIVE_BOOKING_SUCCESS", guestInfo => {
+    client.on("RECEIVE_BOOKING_SUCCESS", guestMoneyInfo => {
       let driver = getAllDrivers(connectedUser).find(u => u.clientid === client.id);
-      if(guestInfo && guestInfo.clientid !== null && typeof guestInfo.clientid !== 'undefined'){
-        let guestClientId = guestInfo.clientid;
-        io.to(guestClientId).emit("FIND_DRIVER_SUCCESS",driver);
+      if(guestMoneyInfo && guestMoneyInfo.guest && guestMoneyInfo.guest.clientid !== null && typeof guestMoneyInfo.guest.clientid !== 'undefined'){
+        let money = guestMoneyInfo.money;
+        let guestClientId = guestMoneyInfo.guest.clientid;
+        console.log("guestClientID",guestClientId);
+        let driverMoneyInfo ={
+          money,
+          driver
+        }
+        io.to(guestClientId).emit("FIND_DRIVER_SUCCESS",driverMoneyInfo);
       }
     });
 

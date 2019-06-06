@@ -1,5 +1,6 @@
 import * as types from "./../constants/ActionTypes";
 import userService from "./../services/userService";
+import historyService from "./../services/historyService";
 
 const findDriversRequest = (latLng) => {
     return {
@@ -8,10 +9,10 @@ const findDriversRequest = (latLng) => {
     }
 }
 
-const findDriversSuccess = (driver) => {
+const findDriversSuccess = (driverMoneyInfo) => {
     return {
         type: types.FIND_DRIVERS_SUCCESS,
-        driver
+        driverMoneyInfo
     }
 }
 
@@ -28,10 +29,10 @@ const receiBookingRequest = (guestInfo) => {
     }
 }
 
-const acceptBookingSuccess = (guestInfo) => {
+const acceptBookingSuccess = (guestMoneyInfo) => {
     return {
         type: types.RECEIVE_BOOKING_SUCCESS,
-        guestInfo
+        guestMoneyInfo
     }
 }
 
@@ -81,9 +82,38 @@ const payingSuccess = () => {
     }
 }
 
-const completeRequest = () =>{
+const completeByGuest = () =>{
     return {
-        type: types.COMPLETE_REQUEST,
+        type: types.COMPLETE_BY_GUEST,
+    }
+}
+
+const completeByDriver = (history) =>{
+    return dispatch => {
+        historyService.saveHistory(history)
+            .then(result => {
+                let {status} = result;
+                if(status){
+                    dispatch(saveHistorySuccess());
+                }else{
+                    dispatch(saveHistoryFailure());
+                }
+            })
+            .catch(err => {
+                dispatch(saveHistoryFailure());
+            })
+    }
+}
+
+const saveHistorySuccess = () => {
+    return {
+        type: types.SAVE_HISTORY_SUCCESS
+    }
+}
+
+const saveHistoryFailure = () => {
+    return {
+        type: types.SAVE_HISTORY_FAILURE
     }
 }
 
@@ -100,7 +130,10 @@ const bikeBookingAction = {
     toGoalSuccess,
     payingRequest,
     payingSuccess,
-    completeRequest
+    completeByGuest,
+    completeByDriver,
+    saveHistorySuccess,
+    saveHistoryFailure
 }
 
 export default bikeBookingAction

@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("./../models/user");
 const saltRounds = 10;
+const Hisotry = require("./../models/historyBooking");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
@@ -81,6 +82,25 @@ const login = async ({ email, password }) => {
   }
 };
 
+const saveHistory = async (data) => {
+  try {
+    const historyResult = await new Hisotry({
+      driverFullName : data.driver,
+      guestFullName : data.guest,
+      bill : data.money,
+    })
+    const saveHistoryResult = await historyResult.save();
+    if(saveHistoryResult){
+      return {
+        status: true,
+        data: "save success"
+      }
+    }
+  } catch(err){
+    return {status: false,data: "fail when save"}
+  }
+}
+
 //Option 2
 // const signup = ({ email, fullName, password }) => {
 //   return User.findOne({
@@ -117,7 +137,7 @@ const login = async ({ email, password }) => {
 const service = {
   signup,
   login,
-  
+  saveHistory
 };
 
 module.exports = service;

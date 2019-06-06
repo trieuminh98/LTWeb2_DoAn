@@ -67,6 +67,13 @@ router.post("/login", (req, res, next) => {
   });
 });
 
+router.post("/saveHistory", (req, res, next) => {
+  service.saveHistory(req.body).then(result => {
+    console.log("result", result);
+    res.json(result);
+  });
+});
+
 router.post(
   "/profile",
   passport.authenticate("jwt", { session: false }),

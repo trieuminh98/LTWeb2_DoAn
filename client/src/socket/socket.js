@@ -14,7 +14,7 @@ const middleware = socket => {
       case "FIND_DRIVERS_REQUEST":
         socket.emit(action.type, action.latLng);
       case "RECEIVE_BOOKING_SUCCESS":
-        socket.emit(action.type, action.guestInfo);
+        socket.emit(action.type, action.guestMoneyInfo);
       case "RECCEIVE_BOOKING_FAILURE":
         socket.emit(action.type, action.guestInfo);
       case "PICKED_UP_REQUEST":
@@ -40,8 +40,8 @@ const dispatcher = (socket, dispatchFn) => {
     dispatchFn(userAction.getAllDrivers(drivers));
   });
 
-  socket.on("FIND_DRIVER_SUCCESS", driver => {
-    dispatchFn(bikeBookingAction.findDriversSuccess(driver));
+  socket.on("FIND_DRIVER_SUCCESS", driverMoneyInfo => {
+    dispatchFn(bikeBookingAction.findDriversSuccess(driverMoneyInfo));
   });
 
   socket.on("FIND_DRIVERS_FAILURE", () => {

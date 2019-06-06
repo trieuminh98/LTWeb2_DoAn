@@ -179,18 +179,37 @@ class GoogleMapComponent extends React.Component {
     }
   };
 
-  onCompleteRequest = () => {
-    this.props.completeRequest();
+  onCompleteByGuest = () => {
+    this.props.completeByGuest();
+  }
+
+  onCompleteByDriver = (history) => {
+    this.props.completeByDriver(history);
   }
 
   onRenderComplete = () => {
-    const { bikeBookingReducer } = this.props;
-    const { isPayed, payed, guest , foundDriver } = bikeBookingReducer;
-    if (isPayed || payed) {
+    const { bikeBookingReducer,usersReducer } = this.props;
+    const { isPayed, payed, guest, money } = bikeBookingReducer;
+    if (isPayed) {
+      const history = {
+        driver: usersReducer.currentUser.fullName,
+        guest: guest.fullName,
+        money
+      }
       return (
         <button
           className="btn btn-success"
-          onClick={e => this.onCompleteRequest()}
+          onClick={e => this.onCompleteByDriver(history)}
+        >
+          Hoàn thành chuyến đi
+        </button>
+      );
+    }
+    else if(payed){
+      return (
+        <button
+          className="btn btn-success"
+          onClick={e => this.onCompleteByGuest()}
         >
           Hoàn thành chuyến đi
         </button>
@@ -204,11 +223,11 @@ class GoogleMapComponent extends React.Component {
 
   onRenderPaying = () => {
     const { bikeBookingReducer } = this.props;
-    const { isPayed, payed, guest } = bikeBookingReducer;
+    const { isPayed, payed, guest, money } = bikeBookingReducer;
     if (!isPayed && guest) {
       return (
         <div>
-          <span>Tổng tiền: </span>
+          <span>Tổng tiền {money} VNĐ: </span>
           <button
             className="btn btn-success"
             onClick={e => this.onPayingRequest(guest)}
@@ -220,14 +239,14 @@ class GoogleMapComponent extends React.Component {
     } else if (isPayed && guest) {
       return (
         <div>
-          <span>Tổng tiền : </span>
+          <span>Tổng tiền {money} VNĐ : </span>
           <span>Đã nhận</span>
         </div>
       );
     } else {
       return (
         <div>
-          <span>Tổng tiền: </span>
+          <span>Tổng tiền {money} VNĐ: </span>
           <span>{payed ? "Đã trả" : "Đang đợi trả tiền..."}</span>
         </div>
       );
@@ -310,6 +329,11 @@ class GoogleMapComponent extends React.Component {
 
   onRenderBookingForm = () => {
     const { bikeBookingReducer } = this.props;
+    const {guest,money} = bikeBookingReducer;
+    const guestMoneyInfo = {
+      guest,
+      money
+    }
     let isReceiveFormGuest =
       bikeBookingReducer.guest &&
       typeof bikeBookingReducer.guest !== "undefined" &&
@@ -335,7 +359,7 @@ class GoogleMapComponent extends React.Component {
           <h1>Tìm được 1 chuyến đi từ {bikeBookingReducer.guest.username}</h1>
           <button
             className="btn btn-success"
-            onClick={e => this.onAcceptBooking(bikeBookingReducer.guest)}
+            onClick={e => this.onAcceptBooking(guestMoneyInfo)}
           >
             Chấp nhận
           </button>
@@ -366,7 +390,6 @@ class GoogleMapComponent extends React.Component {
 
   onFindDriver = () => {
     const { currentLocation, goalLocation } = this.state;
-    console.log(goalLocation);
     const currentAndGoal = {
       currentLocation,
       goalLocation
@@ -465,7 +488,8 @@ const mapDispatchToProps = dispatch => {
     onToGoalRequest: foundDriver =>
       dispatch(bikeBookingAction.toGoalRequest(foundDriver)),
     onPayingRequest: guest => dispatch(bikeBookingAction.payingRequest(guest)),
-    completeRequest: () => dispatch(bikeBookingAction.completeRequest()),
+    completeByGuest: () => dispatch(bikeBookingAction.completeByGuest()),
+    completeByDriver: (history) => dispatch(bikeBookingAction.completeByDriver(history)),
   };
 };
 
