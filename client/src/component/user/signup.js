@@ -55,8 +55,15 @@ class Signup extends React.Component {
 
   componentDidUpdate() {
     const { alert } = this.props.usersReducer;
+    const {role } = this.state.role;
     if (alert) {
       this.props.history.push("/login");
+    }
+    if(role == "user"){
+      this.setState({
+        filePortrait: null,
+        fileLicense: null
+      })
     }
   }
 
@@ -71,9 +78,23 @@ class Signup extends React.Component {
   onChangeInput = e => {
     let targetValue = e.target.value;
     let targetName = e.target.name;
-    this.setState({
-      [targetName]: targetValue
-    });
+    if(targetName == 'role'){
+      if(targetValue == 'user'){
+        this.setState({
+          [targetName]: targetValue,
+          fileLicense : null,
+          filePortrait: null
+        });
+      }else{
+        this.setState({
+          [targetName]: targetValue
+        });
+      }
+    }else{
+      this.setState({
+        [targetName]: targetValue
+      });
+    }
   };
 
   onChangeHandlerPortrait = event => {

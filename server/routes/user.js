@@ -18,8 +18,20 @@ const storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 router.post("/signup", upload.array("imgs", 10), (req, res, next) => {
+  const {email,fullName,password,role,number} = req.body;
+  const namePortrait = req.files[0].filename;
+  const nameLicense = req.files[1].filename;
+  const signUpData = {
+    email,
+    fullName,
+    password,
+    role,
+    number,
+    namePortrait,
+    nameLicense
+  }
   service
-    .signup(req.body)
+    .signup(signUpData)
     .then(result => {
       console.log("result", result);
       res.json(result);

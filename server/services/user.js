@@ -6,7 +6,7 @@ const multer = require("multer");
 const path = require("path");
 
 //Hàm đăng ký
-const signup = async ({ email, fullName, password, number, role }) => {
+const signup = async ({ email, fullName, password, number, role, namePortrait, nameLicense }) => {
   try {
     const isUserExist = await User.findOne({
       email: email
@@ -25,7 +25,9 @@ const signup = async ({ email, fullName, password, number, role }) => {
           //Opt 3
           userName: email,
           number: number,
-          role: role
+          role: role,
+          imgPortrait: namePortrait,
+          imgLicense: nameLicense
         });
         //save data
         const saveUserResult = await userResult.save();
