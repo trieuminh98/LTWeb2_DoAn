@@ -81,6 +81,12 @@ const payingSuccess = () => {
     }
 }
 
+const completeRequest = () =>{
+    return {
+        type: types.COMPLETE_REQUEST,
+    }
+}
+
 const bikeBookingAction = {
     findDriversRequest,
     findDriversSuccess,
@@ -93,7 +99,8 @@ const bikeBookingAction = {
     toGoalRequest,
     toGoalSuccess,
     payingRequest,
-    payingSuccess
+    payingSuccess,
+    completeRequest
 }
 
 export default bikeBookingAction

@@ -8,13 +8,13 @@ const userRoute = require('./routes/user');
 const passport = require('passport');
 const applyPassport = require('./config/passport');
 const socketManager = require('./socket/socket');
+const path = require('path');
 
-//Kết nối tới socket
-socketManager(io);
 
 //Kết nối tới tới mongodb bằng mongoose
 mongoose.connect('mongodb://localhost:27017/minh-bike', {useNewUrlParser: true});
 
+app.use('/', express.static(path.join(__dirname, 'public')))
 
 //CORS, SERVER này chỉ cho phép server localhost:3000 gửi request đến
 app.use(function(req, res, next) {
@@ -37,4 +37,6 @@ app.get('/',(req,res,next) => {
 
 app.use('/user',userRoute);
 
+//Kết nối tới socket
+socketManager(io);
 server.listen(port,() => console.log(`Listening on port ${port}`));

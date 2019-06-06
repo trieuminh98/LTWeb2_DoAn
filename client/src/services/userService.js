@@ -11,18 +11,11 @@ const signup = (data) => {
     url: `${API}/user/signup`,
     data,
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'multipart/form-data'
     }
   });
 }
 
-const saveImg = (data) => {
-  return Axios({
-    method: "post",
-    url: `${API}/user/saveimg`,
-    data,
-    });
-}
 
 const login = data => {
   return Axios({
@@ -52,5 +45,4 @@ export default {
   signup,
   login,
   getProfile,
-  saveImg
 }

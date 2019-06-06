@@ -23,18 +23,34 @@ class Signup extends React.Component {
 
   //Click submit gọi tới usersAction signupRequest
   onSubmitUser = () => {
-    let { email, password, fullName, number ,role } = this.state;
-    const fdData = new FormData();
-    fdData.append("filePortrait", this.state.filePortrait);
-    let postData = {
-      email,
-      number,
-      password,
-      fullName,
-      role,
-      fdData
-    };
-    this.props.signupRequest(postData);
+    let { email, password, fullName, number, role } = this.state;
+    if (role == "user") {
+      const fdData = new FormData();
+      fdData.append("email", email);
+      fdData.append("number", number);
+      fdData.append("password", password);
+      fdData.append("role", role);
+      fdData.append("fullName", fullName);
+      this.props.signupRequest(fdData);
+    } else {
+      const fdData = new FormData();
+      fdData.append(
+        "imgs",
+        this.state.filePortrait,
+        this.state.filePortrait.name
+      );
+      fdData.append(
+        "imgs",
+        this.state.fileLicense,
+        this.state.fileLicense.name
+      );
+      fdData.append("email", email);
+      fdData.append("number", number);
+      fdData.append("password", password);
+      fdData.append("role", role);
+      fdData.append("fullName", fullName);
+      this.props.signupRequest(fdData);
+    }
   };
 
   componentDidUpdate() {
@@ -58,7 +74,6 @@ class Signup extends React.Component {
     this.setState({
       [targetName]: targetValue
     });
-    console.log(this.state);
   };
 
   onChangeHandlerPortrait = event => {
@@ -91,7 +106,7 @@ class Signup extends React.Component {
   };
 
   onRenderInputFile = () => {
-    if(this.state.role === "driver"){
+    if (this.state.role === "driver") {
       return (
         <div>
           <div className="form-row">

@@ -3,38 +3,30 @@ const User = require("./../models/user");
 const service = require("./../services/user");
 const passport = require("passport");
 const multer = require("multer");
+const path = require("path");
 
-router.post("/signup", (req, res, next) => {
-  console.log(req.body);
-  service.signup(req.body).then(result => {
-    console.log("result", result);
-    res.json(result);
-  });
-});
-
-var storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, './../public/img');
-  },
-
+const storage = multer.diskStorage({
+  destination: "./public/img/",
   filename: function(req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
   }
 });
 
-var upload = multer({ storage: storage }).single('filePotrait')
+var upload = multer({ storage: storage });
 
-router.post('/saveimg',function(req, res) {
-  console.log(req.body);
-  upload(req, res, function (err) {
-         if (err instanceof multer.MulterError) {
-             return res.status(500).json(err)
-         } else if (err) {
-             return res.status(500).json(err)
-         }
-    return res.status(200).send(req.file)
-  })
-
+router.post("/signup", upload.array("imgs", 10), (req, res, next) => {
+  service
+    .signup(req.body)
+    .then(result => {
+      console.log("result", result);
+      res.json(result);
+    })
+    .catch(err => {
+      console.log({ err });
+    });
 });
 
 router.post("/login", (req, res, next) => {

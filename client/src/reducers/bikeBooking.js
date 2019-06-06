@@ -78,6 +78,19 @@ const bikeBookingReducer = (state = initialState, action) => {
         ...state,
         payed: true
       };
+    case types.COMPLETE_REQUEST:
+      return {
+        ...state,
+        foundDriver: null,
+        isDriving: false,
+        guest: null,
+        isPickedUp: false,
+        pickedUp: false,
+        isToGoal: false,
+        toGoal: false,
+        isPayed: false,
+        payed: false
+      };
     default:
       return state;
   }

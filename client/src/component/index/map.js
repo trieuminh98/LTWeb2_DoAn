@@ -179,14 +179,18 @@ class GoogleMapComponent extends React.Component {
     }
   };
 
+  onCompleteRequest = () => {
+    this.props.completeRequest();
+  }
+
   onRenderComplete = () => {
     const { bikeBookingReducer } = this.props;
-    const { isPayed, payed, guest } = bikeBookingReducer;
+    const { isPayed, payed, guest , foundDriver } = bikeBookingReducer;
     if (isPayed || payed) {
       return (
         <button
           className="btn btn-success"
-          onClick={e => this.onCompleteRequest(guest)}
+          onClick={e => this.onCompleteRequest()}
         >
           Hoàn thành chuyến đi
         </button>
@@ -454,7 +458,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(bikeBookingAction.pickedUpRequest(foundDriver)),
     onToGoalRequest: foundDriver =>
       dispatch(bikeBookingAction.toGoalRequest(foundDriver)),
-    onPayingRequest: guest => dispatch(bikeBookingAction.payingRequest(guest))
+    onPayingRequest: guest => dispatch(bikeBookingAction.payingRequest(guest)),
+    completeRequest: () => dispatch(bikeBookingAction.completeRequest()),
   };
 };
 

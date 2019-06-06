@@ -33,7 +33,6 @@ const signup = async ({ email, fullName, password, number, role }) => {
           return {
             status: true,
             data: "Success signup",
-            id: saveUserResult._id
           };
         } else {
           return { status: false, data: "hash password fail" };
