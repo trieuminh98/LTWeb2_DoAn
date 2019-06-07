@@ -30,7 +30,7 @@ class GoogleMapComponent extends React.Component {
     this.state = {
       isSearchGoalLocation: false, // Biến kiểm tra di chuyển bằng chuột hay di chuyển bằng thanh tìm kiếm
       goalLocation: null, // Biến địa chỉ điểm đến
-      currentLocation: null //Biến địa chỉ hiện tại
+      currentLocation: null, //Biến địa chỉ hiện tại
     };
   }
 
@@ -109,6 +109,7 @@ class GoogleMapComponent extends React.Component {
   onRenderLoadingIcon = () => {
     const { bikeBookingReducer } = this.props;
     let isLoading = bikeBookingReducer && bikeBookingReducer.loading;
+    let noDriver = bikeBookingReducer && bikeBookingReducer.error;
     const customStyles = {
       content: {
         top: "50%",
@@ -120,12 +121,26 @@ class GoogleMapComponent extends React.Component {
       },
       overlay: { zIndex: 9999 }
     };
-    return (
-      <Modal isOpen={isLoading} style={customStyles} contentLabel="system">
-        <h1>Đang tìm tài xế....</h1>
-      </Modal>
-    );
+    if(isLoading){
+      return (
+        <Modal isOpen={isLoading} style={customStyles} contentLabel="system">
+          <h1>Đang tìm tài xế....</h1>
+        </Modal>
+      );
+    }
+    else{
+      return (
+        <Modal isOpen={noDriver} style={customStyles} contentLabel="system">
+          <h1>Không tìm thấy tài xế gần bạn 5km... Xin đợi lát tìm kiếm lại </h1>
+          <button onClick={e => this.onCloseLoadingForm()}>Chấp Nhận</button>
+        </Modal>
+      );
+    }
   };
+
+  onCloseLoadingForm = () => {
+    this.props.closeLoadingForm();
+  }
 
   onAcceptBooking = guestInfo => {
     this.props.acceptBookingSuccess(guestInfo);
@@ -490,6 +505,7 @@ const mapDispatchToProps = dispatch => {
     onPayingRequest: guest => dispatch(bikeBookingAction.payingRequest(guest)),
     completeByGuest: () => dispatch(bikeBookingAction.completeByGuest()),
     completeByDriver: (history) => dispatch(bikeBookingAction.completeByDriver(history)),
+    closeLoadingForm: () => dispatch(bikeBookingAction.closeLoadingForm())
   };
 };
 

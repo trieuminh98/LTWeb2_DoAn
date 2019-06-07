@@ -2,15 +2,6 @@
 module.exports = function(io) {
   let connectedUser = [
     {
-      username: "fakeDriver01",
-      fullName: "fakerDriver01",
-      latLng: {
-        lat: 10.786404,
-        lng: 106.680871
-      },
-      role: "driver"
-    },
-    {
       username: "fakeDriver02",
       fullName: "fakerDriver02",
       latLng: {
@@ -158,24 +149,35 @@ module.exports = function(io) {
           if (sortDrivers.length > 1) {
             //Gửi event booking tới tài xế
             let driver01Info = sortDrivers[0];
-            if (driver01Info) {
-              let userLat = latLng.currentLocation.lat;
-              let userLng = latLng.currentLocation.lng;
+            let userLat = latLng.currentLocation.lat;
+            let userLng = latLng.currentLocation.lng;
+            let distanceOfDriverToGuest = distance(
+              userLat,
+              userLng,
+              driver01Info.latLng.lat,
+              driver01Info.latLng.lng,
+              "K"
+            );
+            if (driver01Info && distanceOfDriverToGuest <= 5) {
               let goalLat = latLng.goalLocation.lat;
               let goalLng = latLng.goalLocation.lng;
               let guestInfo = connectedUser.find(
                 u => u.latLng.lat === userLat && u.latLng.lng === userLng
               );
-              let money = Math.round((distance(userLat,userLng,goalLat,goalLng,"K")*2000));
-              console.log("money",money);
+              let money = Math.round(
+                distance(userLat, userLng, goalLat, goalLng, "K") * 2000
+              );
               let guestMoneyInfo = {
                 guestInfo,
                 money
-              }
+              };
               io.to(driver01Info.clientid).emit(
                 "RECEIVE_BOOKING_REQUEST",
                 guestMoneyInfo
               );
+            } else {
+              client.emit("FIND_DRIVERS_FAILURE");
+              return null;
             }
             // io.to(sortDrivers[0].clientid).emit('RECEIVE_BOOKING_REQUEST')
             return sortDrivers[0];
@@ -190,16 +192,23 @@ module.exports = function(io) {
     });
 
     client.on("RECEIVE_BOOKING_SUCCESS", guestMoneyInfo => {
-      let driver = getAllDrivers(connectedUser).find(u => u.clientid === client.id);
-      if(guestMoneyInfo && guestMoneyInfo.guest && guestMoneyInfo.guest.clientid !== null && typeof guestMoneyInfo.guest.clientid !== 'undefined'){
+      let driver = getAllDrivers(connectedUser).find(
+        u => u.clientid === client.id
+      );
+      if (
+        guestMoneyInfo &&
+        guestMoneyInfo.guest &&
+        guestMoneyInfo.guest.clientid !== null &&
+        typeof guestMoneyInfo.guest.clientid !== "undefined"
+      ) {
         let money = guestMoneyInfo.money;
         let guestClientId = guestMoneyInfo.guest.clientid;
-        console.log("guestClientID",guestClientId);
-        let driverMoneyInfo ={
+        console.log("guestClientID", guestClientId);
+        let driverMoneyInfo = {
           money,
           driver
-        }
-        io.to(guestClientId).emit("FIND_DRIVER_SUCCESS",driverMoneyInfo);
+        };
+        io.to(guestClientId).emit("FIND_DRIVER_SUCCESS", driverMoneyInfo);
       }
     });
 
@@ -210,28 +219,40 @@ module.exports = function(io) {
 
     client.on("PICKED_UP_REQUEST", foundDriver => {
       let driverInfo = foundDriver;
-      if(driverInfo && driverInfo.clientid !== null && typeof driverInfo.clientid !== 'undefined'){
+      if (
+        driverInfo &&
+        driverInfo.clientid !== null &&
+        typeof driverInfo.clientid !== "undefined"
+      ) {
         let driverClientId = driverInfo.clientid;
-        console.log("thông tin tài xế client in",driverInfo);
+        console.log("thông tin tài xế client in", driverInfo);
         io.to(driverClientId).emit("PICKED_UP_SUCCESS");
       }
-    })
+    });
 
     client.on("TO_GOAL_REQUEST", foundDriver => {
       let driverInfo = foundDriver;
-      if(driverInfo && driverInfo.clientid !== null && typeof driverInfo.clientid !== 'undefined'){
+      if (
+        driverInfo &&
+        driverInfo.clientid !== null &&
+        typeof driverInfo.clientid !== "undefined"
+      ) {
         let driverClientId = driverInfo.clientid;
         io.to(driverClientId).emit("TO_GOAL_SUCCESS");
       }
-    })
+    });
 
     client.on("PAYING_REQUEST", guest => {
       let guestInfo = guest;
-      if(guestInfo && guestInfo.clientid !== null && typeof guestInfo.clientid !== 'undefined'){
+      if (
+        guestInfo &&
+        guestInfo.clientid !== null &&
+        typeof guestInfo.clientid !== "undefined"
+      ) {
         let guestClientId = guestInfo.clientid;
         io.to(guestClientId).emit("PAYING_SUCCESS");
       }
-    })
+    });
 
     //Kiểm tra thoát kết nối
     client.on("disconnect", () => {

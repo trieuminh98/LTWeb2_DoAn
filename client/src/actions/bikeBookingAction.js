@@ -9,6 +9,12 @@ const findDriversRequest = (latLng) => {
     }
 }
 
+const closeLoadingForm = () => {
+    return {
+        type: types.CLOSE_LOADING_FORM,
+    }
+}
+
 const findDriversSuccess = (driverMoneyInfo) => {
     return {
         type: types.FIND_DRIVERS_SUCCESS,
@@ -133,7 +139,8 @@ const bikeBookingAction = {
     completeByGuest,
     completeByDriver,
     saveHistorySuccess,
-    saveHistoryFailure
+    saveHistoryFailure,
+    closeLoadingForm
 }
 
 export default bikeBookingAction

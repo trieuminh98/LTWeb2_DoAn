@@ -10,7 +10,8 @@ const initialState = {
   toGoal: false,
   isPayed: false,
   payed: false,
-  money: null
+  money: null,
+  error: false
 };
 
 //Trả state về reducer chính index.js/reducers
@@ -31,7 +32,13 @@ const bikeBookingReducer = (state = initialState, action) => {
     case types.FIND_DRIVERS_FAILURE:
       return {
         ...state,
-        error: "No driver for you",
+        error: true,
+        loading: false
+      };
+    case types.CLOSE_LOADING_FORM:
+      return {
+        ...state,
+        error: false,
         loading: false
       };
     case types.RECEIVE_BOOKING_REQUEST:
@@ -91,8 +98,8 @@ const bikeBookingReducer = (state = initialState, action) => {
         payed: false,
         money: null
       };
-    case types.COMPLETE_BY_DRIVER: 
-      return state
+    case types.COMPLETE_BY_DRIVER:
+      return state;
     case types.SAVE_HISTORY_SUCCESS:
       return {
         ...state,
@@ -113,7 +120,7 @@ const bikeBookingReducer = (state = initialState, action) => {
         isToGoal: false,
         isPayed: false,
         money: null,
-        err : "lỗi khi save lịch sử chuyến đi"
+        err: "lỗi khi save lịch sử chuyến đi"
       };
     default:
       return state;
