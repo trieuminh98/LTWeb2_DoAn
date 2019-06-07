@@ -3,3 +3,39 @@
     z-index: 9999;
     top: 200px;
 }
+
+.span-goal-location{
+    z-index: 999;
+    position: absolute;
+    font-size: 30px;
+    top: 5px;
+    left: 360px;
+    font-weight: bold;
+}
+
+.span-pickup-location{
+    z-index: 999;
+    position: absolute;
+    font-size: 30px;
+    top: 50px;
+    left: 419px;
+    font-weight: bold;
+}
+
+.btn-choose-mode{
+    z-index: 999;
+    position: absolute;
+    font-size: 30px;
+    top: 50px;
+    left: 419px;
+    font-weight: bold;
+}
+
+.span-current-mode{
+    z-index: 999;
+    position: absolute;
+    font-size: 30px;
+    top: 50px;
+    left: 600px;
+    font-weight: bold;
+}

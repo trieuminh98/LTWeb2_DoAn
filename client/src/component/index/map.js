@@ -10,6 +10,7 @@ import Modal from "react-modal";
 
 //Action
 import FindDriverButton from "./findDriverButton";
+import PickUpLocation from "./pickUpLocation";
 import usersAction from "./../../actions/usersAction";
 import bikeBookingAction from "./../../actions/bikeBookingAction";
 
@@ -31,6 +32,8 @@ class GoogleMapComponent extends React.Component {
       isSearchGoalLocation: false, // Biến kiểm tra di chuyển bằng chuột hay di chuyển bằng thanh tìm kiếm
       goalLocation: null, // Biến địa chỉ điểm đến
       currentLocation: null, //Biến địa chỉ hiện tại
+      isGetCurrent: false,
+      isGetInput: false,
     };
   }
 
@@ -50,7 +53,6 @@ class GoogleMapComponent extends React.Component {
         latLng: { lat, lng }
       };
       this.props.setUserOnline(userInfo);
-
       this.setState({
         currentLocation: { lat, lng }
       });
@@ -72,25 +74,21 @@ class GoogleMapComponent extends React.Component {
     } else {
       //Gọi action set user online
     }
-    //Lấy địa chỉ hiện tại
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(this.success, this.error);
-    } else {
-      window.alert("bạn cần bật cho phép định vị vị trí hiện tại");
-    }
     //Thanh tìm kiếm
     const provider = new OpenStreetMapProvider();
-    const searchControl = new GeoSearchControl({
+    const searchControl1 = new GeoSearchControl({
+      style: "bar",
       provider: provider,
       animateZoom: true,
       showPopup: false,
       searchLabel: "Nhập vi trí cần tìm,địa chỉ cụ thể...",
-      keepResult: true
+      keepResult: true,
+      autoClose: true,
       // autoClose: true
     });
 
     const map = this.osm.current.leafletElement;
-    map.addControl(searchControl);
+    map.addControl(searchControl1);
 
     //Kiểm tra xem có dùng thanh tìm kiếm
     map.on("geosearch/showlocation", () => {
@@ -121,17 +119,18 @@ class GoogleMapComponent extends React.Component {
       },
       overlay: { zIndex: 9999 }
     };
-    if(isLoading){
+    if (isLoading) {
       return (
         <Modal isOpen={isLoading} style={customStyles} contentLabel="system">
           <h1>Đang tìm tài xế....</h1>
         </Modal>
       );
-    }
-    else{
+    } else {
       return (
         <Modal isOpen={noDriver} style={customStyles} contentLabel="system">
-          <h1>Không tìm thấy tài xế gần bạn 5km... Xin đợi lát tìm kiếm lại </h1>
+          <h1>
+            Không tìm thấy tài xế gần bạn 5km... Xin đợi lát tìm kiếm lại{" "}
+          </h1>
           <button onClick={e => this.onCloseLoadingForm()}>Chấp Nhận</button>
         </Modal>
       );
@@ -140,7 +139,7 @@ class GoogleMapComponent extends React.Component {
 
   onCloseLoadingForm = () => {
     this.props.closeLoadingForm();
-  }
+  };
 
   onAcceptBooking = guestInfo => {
     this.props.acceptBookingSuccess(guestInfo);
@@ -196,21 +195,21 @@ class GoogleMapComponent extends React.Component {
 
   onCompleteByGuest = () => {
     this.props.completeByGuest();
-  }
+  };
 
-  onCompleteByDriver = (history) => {
+  onCompleteByDriver = history => {
     this.props.completeByDriver(history);
-  }
+  };
 
   onRenderComplete = () => {
-    const { bikeBookingReducer,usersReducer } = this.props;
+    const { bikeBookingReducer, usersReducer } = this.props;
     const { isPayed, payed, guest, money } = bikeBookingReducer;
     if (isPayed) {
       const history = {
         driver: usersReducer.currentUser.fullName,
         guest: guest.fullName,
         money
-      }
+      };
       return (
         <button
           className="btn btn-success"
@@ -219,8 +218,7 @@ class GoogleMapComponent extends React.Component {
           Hoàn thành chuyến đi
         </button>
       );
-    }
-    else if(payed){
+    } else if (payed) {
       return (
         <button
           className="btn btn-success"
@@ -344,11 +342,11 @@ class GoogleMapComponent extends React.Component {
 
   onRenderBookingForm = () => {
     const { bikeBookingReducer } = this.props;
-    const {guest,money} = bikeBookingReducer;
+    const { guest, money } = bikeBookingReducer;
     const guestMoneyInfo = {
       guest,
       money
-    }
+    };
     let isReceiveFormGuest =
       bikeBookingReducer.guest &&
       typeof bikeBookingReducer.guest !== "undefined" &&
@@ -389,26 +387,25 @@ class GoogleMapComponent extends React.Component {
     }
   };
 
-  //Sự kiện kiểm tra vị trí mới mỗi khi map được di chuyển
-  onMoveEnd = event => {
-    if (this.osm && this.osm.current.leafletElement) {
-      const map = this.osm.current.leafletElement;
-      if (this.state.isSearchGoalLocation)
-      {
-        this.setState({
-          goalLocation: map.getCenter(),
-          isSearchGoalLocation: false
-        });
-      }
-    }
-  };
+  // //Sự kiện kiểm tra vị trí mới mỗi khi map được di chuyển
+  // onMoveEnd = event => {
+  //   if (this.osm && this.osm.current.leafletElement) {
+  //     const map = this.osm.current.leafletElement;
+  //     if (this.state.isSearchGoalLocation) {
+  //       this.setState({
+  //         goalLocation: map.getCenter(),
+  //         isSearchGoalLocation: false
+  //       });
+  //     }
+  //   }
+  // };
 
   onFindDriver = () => {
     const { currentLocation, goalLocation } = this.state;
     const currentAndGoal = {
       currentLocation,
       goalLocation
-    }
+    };
     if (currentLocation) {
       if (goalLocation) {
         this.props.findDriversRequest(currentAndGoal);
@@ -416,6 +413,53 @@ class GoogleMapComponent extends React.Component {
         console.log("chưa nhập điểm đến");
       }
     }
+  };
+
+  onChooseCurrentLocation = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(this.success, this.error);
+    } else {
+      window.alert("bạn cần bật cho phép định vị vị trí hiện tại");
+    }
+  };
+
+  onChooseGoalLocation = () => {
+    if (this.osm && this.osm.current.leafletElement) {
+      const map = this.osm.current.leafletElement;
+      if (this.state.isSearchGoalLocation) {
+        this.setState({
+          goalLocation: map.getCenter(),
+          isSearchGoalLocation: false
+        });
+      }
+    }
+  }
+
+  onChoosePickUpLocation = () => {
+    console.log("im here")
+    if (this.osm && this.osm.current.leafletElement) {
+      const map = this.osm.current.leafletElement;
+      console.log("map center",map.getCenter())
+      if (this.state.isSearchGoalLocation) {
+        console.log("im here now")
+        this.setState({
+          currentLocation: map.getCenter(),
+          isSearchGoalLocation: false
+        });
+      }else{
+        console.log("im else")
+      }
+    }
+  };
+
+  isChoose = () => {
+      return (
+        <PickUpLocation
+          onChooseGoalLocation={this.onChooseGoalLocation}
+          onChooseCurrentLocation={this.onChooseCurrentLocation}
+          onChoosePickUpLocation={this.onChoosePickUpLocation}
+        />
+      );
   };
 
   onRenderDriversInMap = () => {
@@ -475,6 +519,12 @@ class GoogleMapComponent extends React.Component {
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
           {this.onRenderDriversInMap()}
+          <span className="span-goal-location">Nhập vị trí: </span>
+          <span className="btn-choose-mode">Vị trí đón:</span>
+          <span className="span-current-mode">
+            {this.state.currentLocation ? "Đã lấy vị trí hiện tại" : ""}
+          </span>
+          {this.isChoose()}
           <Marker icon={myIcon} position={position} />
         </Map>
       </React.Fragment>
@@ -504,7 +554,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(bikeBookingAction.toGoalRequest(foundDriver)),
     onPayingRequest: guest => dispatch(bikeBookingAction.payingRequest(guest)),
     completeByGuest: () => dispatch(bikeBookingAction.completeByGuest()),
-    completeByDriver: (history) => dispatch(bikeBookingAction.completeByDriver(history)),
+    completeByDriver: history =>
+      dispatch(bikeBookingAction.completeByDriver(history)),
     closeLoadingForm: () => dispatch(bikeBookingAction.closeLoadingForm())
   };
 };
