@@ -1,7 +1,37 @@
 import React from "react";
+import { connect } from "react-redux";
+import adminAction from "../../actions/adminAction";
 
 class ListDrivers extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  onActiveRequest = (driverEmail) => {
+      this.props.activeRequest(driverEmail);
+  }
+
   render() {
+    const listItems = this.props.adminReducer.listDrivers.map((driver,index) => {
+      return (
+        <tbody>
+          <tr>
+            <td>{index+1}</td>
+            <td>{driver.fullName}</td>
+            <td>{driver.email}</td>
+            <td>{driver.number}</td>
+            <td>
+                <button 
+                    className={driver.status == "lock" ? "btn btn-custom-lock" : "btn btn-custom-active"}
+                    onClick={e => this.onActiveRequest({driverEmail: driver.email})}
+                >
+                    {driver.status == "lock" ? "Khóa" : "Kích hoạt"}
+                </button>
+            </td>
+          </tr>
+        </tbody>
+      );
+    });
     return (
       <React.Fragment>
         <div className="div-container-driver">
@@ -16,17 +46,7 @@ class ListDrivers extends React.Component {
                 <th scope="col">Trạng thái</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>
-                    <button className="btn btn-custom-active">kích hoạt</button>
-                </td>
-              </tr>
-            </tbody>
+            {listItems}
           </table>
         </div>
       </React.Fragment>
@@ -34,4 +54,19 @@ class ListDrivers extends React.Component {
   }
 }
 
-export default ListDrivers;
+const mapStateToProps = state => {
+  return {
+    adminReducer: state.adminReducer
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        activeRequest: (driverEmail) => dispatch(adminAction.activeRequest(driverEmail))
+    }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ListDrivers);

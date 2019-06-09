@@ -39,11 +39,22 @@
 
 .btn-custom-active {
     background-color: green;
-    display:block;
+    display:inline-block;
     height:30px;
-    width: 100px;
+    width: 80px;
     font-size:13px;
-    margin: 20 auto;
+        padding: 0;
+    text-align: center;
+    line-height: initial;
+}
+
+
+.btn-custom-lock {
+    background-color:orange;
+    display:inline-block;
+    height:30px;
+    width: 80px;
+    font-size:13px;
     padding: 0;
     text-align: center;
     line-height: initial;

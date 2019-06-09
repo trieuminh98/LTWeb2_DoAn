@@ -10,6 +10,7 @@ const User = new Schema({
   role: {type:String,required: true},
   imgPortrait : {type:String,default: "None"},
   imgLicense: {type:String,default: "None"},
+  status: {type:String,default: "None"},
 });
 
 module.exports = mongoose.model('User',User);

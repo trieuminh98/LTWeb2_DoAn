@@ -74,6 +74,21 @@ router.post("/saveHistory", (req, res, next) => {
   });
 });
 
+router.get("/checkAllDriver", (req, res, next) => {
+  service.checkAllDriver().then(result => {
+    console.log("result", result);
+    res.json(result);
+  });
+});
+
+router.post("/activeRequest", (req, res, next) => {
+  console.log("router",req.body.driverEmail)
+  service.activeRequest(req.body.driverEmail).then(result => {
+    console.log("result", result);
+    res.json(result);
+  });
+});
+
 router.post(
   "/profile",
   passport.authenticate("jwt", { session: false }),

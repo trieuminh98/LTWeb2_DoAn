@@ -17,6 +17,11 @@ const signup = async ({ email, fullName, password, number, role, namePortrait, n
     } else {
       const hash = await bcrypt.hash(password, saltRounds);
       if (hash) {
+        let userStatus;
+        let userActive;
+        if(role == 'driver'){
+           userStatus = "lock"
+        }
         const userResult = new User({
           //Opt 1
           email: email,
@@ -28,7 +33,8 @@ const signup = async ({ email, fullName, password, number, role, namePortrait, n
           number: number,
           role: role,
           imgPortrait: namePortrait,
-          imgLicense: nameLicense
+          imgLicense: nameLicense,
+          status: userStatus,
         });
         //save data
         const saveUserResult = await userResult.save();
@@ -101,6 +107,80 @@ const saveHistory = async (data) => {
   }
 }
 
+const checkAllDriver = async () => {
+  try {
+    const checkAllDriverResult = await User.find({
+      role: "driver",
+    });
+    if(checkAllDriverResult){
+      var allDriver = checkAllDriverResult.map(driver => {
+        return {
+          email: driver.email,
+          fullName: driver.fullName,
+          number: driver.number,
+          status: driver.status,
+          active: driver.active
+        }
+      })
+      return{
+        status: true,
+        mess: "check success",
+        data: allDriver
+      }
+    }
+    else{
+      return{
+        status: false,
+        mess: "check fail,no driver in db"
+      }
+    }
+  } catch(err){
+    return {status: false,data: "fail when check"}
+  }
+}
+
+const activeRequest = async (driverEmail) => {
+  try {
+    const checkDriverEmailResult = await User.findOne({
+      email: driverEmail
+    })
+    if(checkDriverEmailResult){
+      let updateStatus;
+      if(checkDriverEmailResult.status == "lock"){
+        updateStatus = "active";
+      }else{
+        updateStatus = "lock"
+      }
+      const updateRes = await User.updateOne({
+        email: driverEmail
+      },{
+        status: updateStatus
+      });
+      if(updateRes){
+        return {
+          status: true,
+          data: "update success"
+        }
+      }else{
+        return{
+          status: false,
+          data: "update fail"
+        }
+      }
+    }else{
+      return{
+        status:false,
+        data: "email not existing"
+      }
+    }
+  } catch(err){
+    return{
+      status: false,
+      data: "fail when update"
+    }
+  }
+}
+
 //Option 2
 // const signup = ({ email, fullName, password }) => {
 //   return User.findOne({
@@ -137,7 +217,9 @@ const saveHistory = async (data) => {
 const service = {
   signup,
   login,
-  saveHistory
+  saveHistory,
+  checkAllDriver,
+  activeRequest
 };
 
 module.exports = service;
