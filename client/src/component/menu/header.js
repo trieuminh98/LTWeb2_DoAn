@@ -84,6 +84,11 @@ class Header extends React.Component {
                       Nhắn tin
                     </Link>
                   </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/admin">
+                      Quản lý
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </nav>

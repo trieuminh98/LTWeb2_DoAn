@@ -1,0 +1,50 @@
+.div-container-driver {
+    position: relative;
+    width: 1200px;
+    height: 200px;
+    left:20px;
+    top:20px;
+    background-color:whitesmoke;
+    border-radius: 10px;
+    overflow: hidden;
+    overflow-y:scroll;
+}
+
+.table-driver {
+    position: relative;
+    left: 20px;
+    width: 1150px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+
+.btn-accept {
+    height: 50px;
+    width: 100px;
+    border-radius: 5px;
+    background-color: green;
+    font-size:10px;
+    align-items:center;
+}
+
+.btn-reject {
+    height: 50px;
+    width: 100px;
+    border-radius: 5px;
+    font-size:10px;
+    align-items:center;
+    background-color: red;
+}
+
+.btn-custom-active {
+    background-color: green;
+    display:block;
+    height:30px;
+    width: 100px;
+    font-size:13px;
+    margin: 20 auto;
+    padding: 0;
+    text-align: center;
+    line-height: initial;
+}
