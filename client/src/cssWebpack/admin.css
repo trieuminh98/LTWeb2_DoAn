@@ -4,7 +4,7 @@
     height: 200px;
     left:20px;
     top:20px;
-    background-color:whitesmoke;
+    background-color:white;
     border-radius: 10px;
     overflow: hidden;
     overflow-y:scroll;
@@ -56,6 +56,37 @@
     width: 80px;
     font-size:13px;
     padding: 0;
+    text-align: center;
+    line-height: initial;
+}
+
+.div-container-satistical{
+    position: relative;
+    width: 1200px;
+    left:20px;
+    top:20px;
+    background-color:white;
+    border-radius: 10px;
+}
+
+.data-picker-custom {
+    top:20px;
+    margin:20px;
+    border-width: 5px;
+    border-style:groove;
+    border-radius: 12px
+}
+
+.btn-statistical-custom {
+    display:inline-block;
+    background-color:white;
+    height:170px;
+    width: 200px;
+    top:20px;
+    margin:20px;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 10px;
     text-align: center;
     line-height: initial;
 }

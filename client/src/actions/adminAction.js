@@ -72,6 +72,40 @@ const activeFailure = err => {
     }
 }
 
+const statisticalRequest = (dateInfo) => {
+  return dispatch => {
+    adminService
+    .statisticalRequest(dateInfo)
+    .then(result => {
+        const {status,data} = result.data;
+        if(status){
+            dispatch(statisticalSuccess(data));
+     }
+        else{
+            dispatch(statisticalFailure(data));
+        }
+    })
+    .catch(err => {
+        console.log("thất bại => ", err);
+        dispatch(statisticalFailure(err.toString()));
+    })
+}
+}
+
+const statisticalSuccess = (data) => {
+  return {
+    type: types.STATISTICAL_SUCCESS,
+    data
+  }
+}
+
+const statisticalFailure = (err) => {
+  return {
+    type: types.STATISTICAL_REQUEST,
+    err
+  }
+}
+
 
 
 const adminAction = {
@@ -80,7 +114,10 @@ const adminAction = {
   checkAllDriverFailure,
   activeRequest,
   activeSuccess,
-  activeFailure
+  activeFailure,
+  statisticalRequest,
+  statisticalSuccess,
+  statisticalFailure,
 };
 
 export default adminAction;

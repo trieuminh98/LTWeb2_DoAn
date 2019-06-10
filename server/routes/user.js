@@ -89,6 +89,13 @@ router.post("/activeRequest", (req, res, next) => {
   });
 });
 
+router.post("/statisticalRequest", (req, res, next) => {
+  console.log("router",req.body.dateInfo)
+  service.statisticalRequest(req.body.dateInfo).then(result => {
+    res.json(result);
+  });
+});
+
 router.post(
   "/profile",
   passport.authenticate("jwt", { session: false }),

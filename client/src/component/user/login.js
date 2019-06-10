@@ -66,43 +66,60 @@ class Login extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div className="container">
-          <div className="row">
-            <div className="col-md-6">
-              <h1>Đăng Nhập</h1>
-              <div className="form-group">
-                <label>Email:</label>
-                <input
-                  value={this.state.email}
-                  type="email"
-                  className="form-control"
-                  placeholder="Nhập email"
-                  name="email"
-                  onChange={this.onChangeInput}
-                />
-                <label>Mật Khẩu:</label>
-                <input
-                  value={this.state.password}
-                  type="password"
-                  className="form-control"
-                  placeholder="Nhập mật khẩu"
-                  name="password"
-                  onChange={this.onChangeInput}
-                />
-                <br />
+        <div className="page-wrapper bg-dark p-t-100 p-b-50">
+          <div className="wrapper wrapper--w900">
+            <div className="card card-6">
+              <div className="card-heading">
+                <h2 className="title">Đăng nhập</h2>
+              </div>
+              <div className="card-body">
+                <form method="POST">
+                  <div className="form-row">
+                    <div className="name">Địa chỉ email: </div>
+                    <div className="value">
+                      <div className="input-group">
+                        <input
+                          value={this.state.email}
+                          className="input--style-6"
+                          type="email"
+                          name="email"
+                          placeholder="vidu@email.com"
+                          onChange={this.onChangeInput}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="name">Mật khẩu</div>
+                    <div className="value">
+                      <div className="input-group">
+                        <input
+                          className="input--style-6"
+                          name="password"
+                          placeholder="Nhập mật khẩu"
+                          value={this.state.password}
+                          type="password"
+                          onChange={this.onChangeInput}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div className="card-footer">
                 {this.onRenderAlert()}
-                <br />
-                <button className="btn btn-success" onClick={this.onSubmitUser}>
-                  Đăng nhập
+                <button
+                  className="btn btn--radius-2 btn--blue-2"
+                  type="submit"
+                  onClick={this.onSubmitUser}
+                >
+                  Đăng ký
                 </button>
-                <button className="btn btn-primary" onClick={this.onSeeProfile}>
-                  Xem profile
-                </button>
-                <br />
               </div>
             </div>
           </div>
         </div>
+        ); } });
       </React.Fragment>
     );
   }

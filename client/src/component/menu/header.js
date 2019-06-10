@@ -62,12 +62,25 @@ class Header extends React.Component {
     }
   };
 
+  onRenderManager = () => {
+    const { currentUser } = this.props.userReducers;
+    if (currentUser && currentUser.role !== null && currentUser.role == "admin") {
+      return (
+        <li className="nav-item">
+          <Link className="nav-link" to="/admin">
+            Quản lý
+          </Link>
+        </li>
+      );
+    }
+  };
+
   render() {
     const { currentUser } = this.props.userReducers;
     const token = localStorage.getItem("token");
     return (
       <React.Fragment>
-        <div className="row bg-light">
+        <div className="row bg-white">
           <div className="col-md-8">
             <nav className="navbar navbar-expand-lg navbar-light">
               <span>MMLBike</span>
@@ -84,11 +97,7 @@ class Header extends React.Component {
                       Nhắn tin
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/admin">
-                      Quản lý
-                    </Link>
-                  </li>
+                  {this.onRenderManager()}
                 </ul>
               </div>
             </nav>

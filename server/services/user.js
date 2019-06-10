@@ -66,25 +66,35 @@ const login = async ({ email, password }) => {
         isUserExist.password
       );
       //Du lieu dung het thi gui status success va token ve client
+      let isActive;
+      if(isUserExist.status == "lock"){
+        isActive = false
+      }else{
+        isActive = true;
+      }
       if (isPasswordCorret) {
-        var data = {
-          //vi id cua mongodb là _id
-          id: isUserExist._id,
-          email: isUserExist.email,
-          fullName: isUserExist.fullName,
-          role: isUserExist.role
-        };
-        var token = jwt.sign({ data }, "minh", { expiresIn: "1h" });
-        return { status: true, token, data: data };
+        if(isActive){
+          var data = {
+            //vi id cua mongodb là _id
+            id: isUserExist._id,
+            email: isUserExist.email,
+            fullName: isUserExist.fullName,
+            role: isUserExist.role
+          };
+          var token = jwt.sign({ data }, "minh", { expiresIn: "1h" });
+          return { status: true, token, data: data };
+        }else{
+          return {status: false,data: "tài khoản bạn đã bị khóa hoặc chưa kích hoạt"}
+        }
       } else {
-        return { status: false, data: "password incorrect." };
+        return { status: false, data: "mật khẩu không đúng." };
       }
     } else {
-      return { status: false, data: "email not existing." };
+      return { status: false, data: "email không tồn tài." };
     }
   } catch (err) {
     console.log(err);
-    return { status: false, data: "fail when login" };
+    return { status: false, data: "đăng nhập thất bại" };
   }
 };
 
@@ -181,6 +191,49 @@ const activeRequest = async (driverEmail) => {
   }
 }
 
+const statisticalRequest = async (dateInfo) => {
+  try {
+    let _date = new Date(dateInfo);
+    const checkStatisticalMonthResult = await Hisotry.find({
+      $and: [
+        {"date": {"$gte": new Date(_date.getFullYear(),_date.getMonth(),2)}},
+        {"date": {"$lte": new Date(_date.getFullYear(),_date.getMonth(),32)}}
+      ]
+    })
+    const checkStatisticalDayResult = await Hisotry.find({
+      $and: [
+        {"date": {"$gte": new Date(_date.getFullYear(),_date.getMonth(),_date.getDate())}},
+        {"date": {"$lte": new Date(_date.getFullYear(),_date.getMonth(),_date.getDate()+1)}}
+      ]
+    })
+    let sumDay = 0;
+    checkStatisticalDayResult.forEach((historyBill) => {
+        sumDay += parseInt(historyBill.bill)
+    })
+    let sumMonth = 0;
+    checkStatisticalMonthResult.forEach((historyBill) => {
+        sumMonth += parseInt(historyBill.bill)
+    })
+    let allBookingDay = checkStatisticalDayResult.length;
+    let allBookingMonth = checkStatisticalMonthResult.length;
+    let data = {
+      sumDay,
+      sumMonth,
+      allBookingDay,
+      allBookingMonth
+    }
+    return {
+      status: true,
+      data: data
+    }
+  } catch(err){
+    return{
+      status: false,
+      data: err
+    }
+  }
+}
+
 //Option 2
 // const signup = ({ email, fullName, password }) => {
 //   return User.findOne({
@@ -219,7 +272,8 @@ const service = {
   login,
   saveHistory,
   checkAllDriver,
-  activeRequest
+  activeRequest,
+  statisticalRequest
 };
 
 module.exports = service;

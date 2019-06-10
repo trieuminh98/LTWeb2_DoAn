@@ -12,7 +12,6 @@ const checkAllDriver = () => {
   }
 
 const activeRequest = (driverEmail) => {
-  console.log("adminService")
     return Axios({
       method: "post",
       url: `${API}/user/activeRequest`,
@@ -23,7 +22,19 @@ const activeRequest = (driverEmail) => {
     });
   }
 
+  const statisticalRequest = (dateInfo) => {
+      return Axios({
+        method: "post",
+        url: `${API}/user/statisticalRequest`,
+        data: dateInfo,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+
   export default {
     checkAllDriver,
     activeRequest,
+    statisticalRequest,
   }
