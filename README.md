@@ -5,3 +5,4 @@
 ## Họ tên: Phan Ngọc Anh Luân, MSSV:1660336, email: luancoi456@gmail.com, số điện thoại: 0386800009
 
 ##link github: https://github.com/TinTrieuMinh1660349/LTWeb2_DoAn
+##link demo: https://www.youtube.com/watch?v=toB9A1oK_mk&list=PLu23w6W65r3DRbIzGjUOePkLYLZDirWlS&fbclid=IwAR0Xx7xB9T_L4M2PJXNXXg8mmOX1HXEGElUsb12ApgOVlP2n2xZVMJ16t88
