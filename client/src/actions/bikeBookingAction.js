@@ -43,6 +43,7 @@ const acceptBookingSuccess = (guestMoneyInfo) => {
 }
 
 const acceptBookingFailure = (guestInfo) => {
+    console.log("guestInfo",guestInfo);
     return {
         type: types.RECEIVE_BOOKING_FAILURE,
         guestInfo

@@ -7,6 +7,7 @@ import * as L from "leaflet";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import { connect } from "react-redux";
 import Modal from "react-modal";
+import InfoBooking from "./InfoBooking";
 
 //Action
 import FindDriverButton from "./findDriverButton";
@@ -32,8 +33,12 @@ class GoogleMapComponent extends React.Component {
       isSearchGoalLocation: false, // Biến kiểm tra di chuyển bằng chuột hay di chuyển bằng thanh tìm kiếm
       goalLocation: null, // Biến địa chỉ điểm đến
       currentLocation: null, //Biến địa chỉ hiện tại
+      tempLocationName: null,
+      pickUpLocationName:null,
+      goalLocationName: null,
       isGetCurrent: false,
       isGetInput: false,
+      i: 15
     };
   }
 
@@ -91,8 +96,9 @@ class GoogleMapComponent extends React.Component {
     map.addControl(searchControl1);
 
     //Kiểm tra xem có dùng thanh tìm kiếm
-    map.on("geosearch/showlocation", () => {
+    map.on("geosearch/showlocation", (e) => {
       this.setState({
+        tempLocationName: e.location.label,
         isSearchGoalLocation: true
       });
     });
@@ -131,7 +137,7 @@ class GoogleMapComponent extends React.Component {
           <h1>
             Không tìm thấy tài xế gần bạn 5km... Xin đợi lát tìm kiếm lại{" "}
           </h1>
-          <button onClick={e => this.onCloseLoadingForm()}>Chấp Nhận</button>
+          <button className="btn btn-success" onClick={e => this.onCloseLoadingForm()}>Chấp Nhận</button>
         </Modal>
       );
     }
@@ -146,6 +152,7 @@ class GoogleMapComponent extends React.Component {
   };
 
   onRejectBooking = guestInfo => {
+    console.log("guestInfo",guestInfo)
     this.props.acceptBookingFailure(guestInfo);
   };
 
@@ -352,6 +359,14 @@ class GoogleMapComponent extends React.Component {
       typeof bikeBookingReducer.guest !== "undefined" &&
       !bikeBookingReducer.isDriving;
     if (isReceiveFormGuest) {
+      let i = 15
+      let timer = setInterval(() => {
+        console.log("i",i--)
+        if(i<=0){     
+          clearInterval(timer);
+          this.onRejectBooking(bikeBookingReducer.guest)
+        }
+      }, 1000);
       const customStyles = {
         content: {
           top: "50%",
@@ -378,10 +393,10 @@ class GoogleMapComponent extends React.Component {
           </button>
           <button
             className="btn btn-danger"
-            onClick={e => this.onRejectBooking(bikeBookingReducer.guest)}
+            onClick={e => this.onRejectBooking(guest)}
           >
             Từ chối
-          </button>
+          </button><br/>
         </Modal>
       );
     }
@@ -418,6 +433,9 @@ class GoogleMapComponent extends React.Component {
   onChooseCurrentLocation = () => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(this.success, this.error);
+      this.setState({
+        pickUpLocationName: "Đã chọn vị trí hiện tại"
+      })
     } else {
       window.alert("bạn cần bật cho phép định vị vị trí hiện tại");
     }
@@ -429,6 +447,7 @@ class GoogleMapComponent extends React.Component {
       if (this.state.isSearchGoalLocation) {
         this.setState({
           goalLocation: map.getCenter(),
+          goalLocationName: this.state.tempLocationName,
           isSearchGoalLocation: false
         });
       }
@@ -444,6 +463,7 @@ class GoogleMapComponent extends React.Component {
         console.log("im here now")
         this.setState({
           currentLocation: map.getCenter(),
+          pickUpLocationName: this.state.tempLocationName,
           isSearchGoalLocation: false
         });
       }else{
@@ -503,6 +523,7 @@ class GoogleMapComponent extends React.Component {
         {foundDriver ? <p>Tài xế cho bạn: {foundDriver.username}</p> : ""}
         {guest ? <p>Khách hàng của bạn: {guest.username}</p> : ""}
         <FindDriverButton onFindDriver={this.onFindDriver} />
+        <InfoBooking pickUpLocation={this.state.pickUpLocationName ? this.state.pickUpLocationName : ""} goalLocationName={this.state.goalLocationName ? this.state.goalLocationName : ""}/>
         {this.onRenderIsDrivingForm()}
         {this.onRenderLoadingIcon()}
         {this.onRenderBookingForm()}

@@ -26,6 +26,11 @@ class Header extends React.Component {
               </Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" to="map">
+                <span>Loại người dùng: {currentUser.role}</span>
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link
                 className="nav-link"
                 to="/login"

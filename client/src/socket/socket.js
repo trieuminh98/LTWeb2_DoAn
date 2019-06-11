@@ -6,23 +6,33 @@ import bikeBookingAction from "./../actions/bikeBookingAction";
 //Mọi action sẽ đi qua đây,tích hợp socketio vào middleware,gửi về phía server
 const middleware = socket => {
   return store => next => action => {
+    console.log("ACTION =? ",action);
     switch (action.type) {
       case "SEND_MESSAGE":
         socket.emit(action.type, action.payload);
+        break;
       case "SET_USER_ONLINE":
         socket.emit(action.type, action.userInfo);
+        break;
       case "FIND_DRIVERS_REQUEST":
         socket.emit(action.type, action.latLng);
+        break;
       case "RECEIVE_BOOKING_SUCCESS":
         socket.emit(action.type, action.guestMoneyInfo);
-      case "RECCEIVE_BOOKING_FAILURE":
+        break;
+      case "RECEIVE_BOOKING_FAILURE":
+        console.log("AAAAAAAAAAAAAAAAAAa")
         socket.emit(action.type, action.guestInfo);
+        break;
       case "PICKED_UP_REQUEST":
         socket.emit(action.type, action.foundDriver);
+        break;
       case "TO_GOAL_REQUEST":
         socket.emit(action.type, action.foundDriver);
+        break;
       case "PAYING_REQUEST":
         socket.emit(action.type, action.guest);
+        break;
       default:
         break;
     }

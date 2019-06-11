@@ -213,8 +213,10 @@ module.exports = function(io) {
     });
 
     client.on("RECEIVE_BOOKING_FAILURE", guestInfo => {
+      console.log({guestInfo})
       let guestClientId = guestInfo.clientid;
-      io.to(guestClientId).emit("FIND_DRIVER_FAILURE");
+      console.log("guestClientId",guestClientId)
+      io.to(guestClientId).emit("FIND_DRIVERS_FAILURE");
     });
 
     client.on("PICKED_UP_REQUEST", foundDriver => {

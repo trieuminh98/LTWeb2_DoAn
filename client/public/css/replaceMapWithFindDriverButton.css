@@ -1,7 +1,8 @@
 .find_driver-btn{
     position: absolute;
     z-index: 9999;
-    top: 200px;
+    top: 180px;
+    left: 670px;
 }
 
 .span-goal-location{
@@ -38,4 +39,13 @@
     top: 50px;
     left: 600px;
     font-weight: bold;
+}
+
+.info-custom {
+    z-index: 999;
+    position: absolute;
+    height: 400px;
+    width: 300px;
+    top: 80px;
+    right:50px;
 }

@@ -113,7 +113,7 @@ class Login extends React.Component {
                   type="submit"
                   onClick={this.onSubmitUser}
                 >
-                  Đăng ký
+                  Đăng nhập
                 </button>
               </div>
             </div>

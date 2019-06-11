@@ -69,7 +69,7 @@ class Statistical extends React.Component {
       startDate: date
     });
     let dateInfo = {
-      dateInfo: new Date(this.state.startDate)
+      dateInfo: new Date(date)
     };
     this.props.statisticalRequest(dateInfo);
   }
@@ -98,7 +98,7 @@ class Statistical extends React.Component {
           </button>
           <button className="btn-statistical-custom">
             {this.Header(3)}
-            Tổng tiền tháng: {this.props.adminReducer.allBookingDay}
+            Tổng tiền tháng: {this.props.adminReducer.sumMonth}
           </button>
           <button className="btn-statistical-custom">
             {this.Header(4)}
