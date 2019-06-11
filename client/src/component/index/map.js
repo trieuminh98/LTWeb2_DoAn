@@ -26,6 +26,7 @@ L.Icon.Default.mergeOptions({
 });
 
 class GoogleMapComponent extends React.Component {
+  timer = null;
   constructor(props) {
     super(props);
     this.osm = React.createRef(); //Refs để lấy thuộc tính dom trong JSX ra
@@ -38,7 +39,8 @@ class GoogleMapComponent extends React.Component {
       goalLocationName: null,
       isGetCurrent: false,
       isGetInput: false,
-      i: 15
+      i: 15,
+      isDrivingForm: false,
     };
   }
 
@@ -148,6 +150,10 @@ class GoogleMapComponent extends React.Component {
   };
 
   onAcceptBooking = guestInfo => {
+    clearTimeout(this.timer);
+    this.setState({
+      isDrivingForm: true
+    })
     this.props.acceptBookingSuccess(guestInfo);
   };
 
@@ -205,6 +211,9 @@ class GoogleMapComponent extends React.Component {
   };
 
   onCompleteByDriver = history => {
+    this.setState({
+      isDrivingForm: false
+    })
     this.props.completeByDriver(history);
   };
 
@@ -358,15 +367,11 @@ class GoogleMapComponent extends React.Component {
       bikeBookingReducer.guest &&
       typeof bikeBookingReducer.guest !== "undefined" &&
       !bikeBookingReducer.isDriving;
-    if (isReceiveFormGuest) {
+    if (isReceiveFormGuest && !this.state.isDrivingForm) {
       let i = 15
-      let timer = setInterval(() => {
-        console.log("i",i--)
-        if(i<=0){     
-          clearInterval(timer);
-          this.onRejectBooking(bikeBookingReducer.guest)
-        }
-      }, 1000);
+      this.timer = setTimeout(() => {
+        this.onRejectBooking(bikeBookingReducer.guest)
+      }, 15000);
       const customStyles = {
         content: {
           top: "50%",
